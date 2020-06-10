@@ -67,12 +67,13 @@ Even distribution with 100 32 bit integers
 ```
 Even distribution with 1000 32 bit integers
 ```
- 20655 hits 979345 misses  10978228 checks in 0.000750 seconds (standard_binary_search)
- 20655 hits 979345 misses  10978228 checks in 0.000727 seconds (tailed_binary_search)
- 20655 hits 979345 misses  10998884 checks in 0.000691 seconds (inbound_binary_search)
- 20655 hits 979345 misses  12567988 checks in 0.000677 seconds (boundless_binary_search)
- 20655 hits 979345 misses  14971660 checks in 0.000557 seconds (boundless_quaternary_search)
- 20655 hits 979345 misses   9843622 checks in 0.000457 seconds (interpolated_search)
+10978228 checks in 0.000751 seconds (standard_binary_search)
+10978228 checks in 0.000750 seconds (standard_binary_search)
+10978228 checks in 0.000727 seconds (tailed_binary_search)
+10998884 checks in 0.000691 seconds (inbound_binary_search)
+12567988 checks in 0.000677 seconds (boundless_binary_search)
+14971660 checks in 0.000557 seconds (boundless_quaternary_search)
+ 9843622 checks in 0.000457 seconds (interpolated_search)
 ```
 Even distribution with 10000 32 bit integers
 ```
