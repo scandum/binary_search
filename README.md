@@ -67,7 +67,6 @@ Even distribution with 100 32 bit integers
 ```
 Even distribution with 1000 32 bit integers
 ```
-10978228 checks in 0.000751 seconds (standard_binary_search)
 10978228 checks in 0.000750 seconds (standard_binary_search)
 10978228 checks in 0.000727 seconds (tailed_binary_search)
 10998884 checks in 0.000691 seconds (inbound_binary_search)
@@ -77,7 +76,6 @@ Even distribution with 1000 32 bit integers
 ```
 Even distribution with 10000 32 bit integers
 ```
-14362424 checks in 0.000959 seconds (standard_binary_search)
 14362424 checks in 0.000960 seconds (standard_binary_search)
 14362424 checks in 0.000940 seconds (tailed_binary_search)
 14999472 checks in 0.000896 seconds (inbound_binary_search)
@@ -87,7 +85,6 @@ Even distribution with 10000 32 bit integers
 ```
 Even distribution with 100000 32 bit integers
 ```
-17688655 checks in 0.001258 seconds (standard_binary_search)
 17688655 checks in 0.001256 seconds (standard_binary_search)
 17688655 checks in 0.001216 seconds (tailed_binary_search)
 17999976 checks in 0.001166 seconds (inbound_binary_search)
@@ -97,7 +94,6 @@ Even distribution with 100000 32 bit integers
 ```
 Even distribution with 1000000 32 bit integers
 ```
-20951514 checks in 0.001774 seconds (standard_binary_search)
 20951514 checks in 0.001773 seconds (standard_binary_search)
 20951514 checks in 0.001721 seconds (tailed_binary_search)
 21000000 checks in 0.001668 seconds (inbound_binary_search)
