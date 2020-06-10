@@ -1,4 +1,4 @@
-The binary search variant currently in most common use was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since.
+The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since.
 
 I succeeded in finding several novel variants with improved performance. The algorithms are licensed under GPL 3 and are available as a collection that is bundled with a bench marking routine. A graph with performance results is included at the bottom of this page.
 
@@ -34,8 +34,8 @@ Boundless Interpolated Binary Search
 
 When you have an even distribution you can make an educated guess as to the location of the index. Due to the expense of the initial check and error correction the interpolated binary search is unlikely to outperform other binary searches on arrays with less than 100 elements. When the distribution is uneven performance will drop quickly, so the utility of the interpolated binary search is limited.
 
-Benchmark
----------
+Benchmark graph
+---------------
 
 ![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search.png)
 
@@ -43,6 +43,9 @@ The above graph shows the execution speed of 10 million searches on arrays with 
 
 The tailed binary search (green) is in all cases more efficient than the standard binary search (red) while performing the same number of key checks. The graph should speak for itself.
 
+Benchmark tables
+----------------
+The source code was compiled using `gcc -O3 binary-search.c`
 
 Even distribution with 10 32 bit integers
 ```
