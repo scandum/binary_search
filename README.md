@@ -1,6 +1,6 @@
 The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since.
 
-I succeeded in finding several novel variants with improved performance. The algorithms are licensed under GPL 3 and are available as a collection that is bundled with a bench marking routine. A graph with performance results is included at the bottom of this page.
+I succeeded in finding several novel variants with improved performance. The algorithms are licensed under GPL 3 (contact me for a commercial license) and are available as a collection that is bundled with a bench marking routine. A graph with performance results is included at the bottom of this page.
 
 The implementations provide a stable search, meaning that if an array contains multiple duplicates the right most matching element is returned. I'll briefly describe each variant below.
 
@@ -32,7 +32,7 @@ Due to boundary issues the mid - 1 optimization used in the standard search cann
 Boundless Interpolated Binary Search
 ------------------------------------
 
-When you have an even distribution you can make an educated guess as to the location of the index. Due to the expense of the initial check and error correction the interpolated binary search is unlikely to outperform other binary searches on arrays with less than 100 elements. When the distribution is uneven performance will drop quickly, so the utility of the interpolated binary search is limited.
+When you have an even distribution you can make an educated guess as to the location of the index. Due to the expense of the initial check and error correction, the interpolated binary search is unlikely to outperform other binary searches on arrays with less than 100 elements. When the distribution is uneven performance will drop quickly, so the utility of the interpolated binary search is limited.
 
 Benchmark graph
 ---------------
