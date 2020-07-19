@@ -1,6 +1,6 @@
-The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since.
+The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since. Below I'll describe several novel variants with improved performance. The most notable variant, the quaternary binary search, executes up to 25% faster on 32 bit integers.
 
-Below I'll describe several novel variants with improved performance. A source code implementation in C is available licensed under GPL 3 (a less restrictive license may be negotiated) and is bundled with a bench marking routine. A graph with performance results is included at the bottom of this page.
+A source code implementation in C is available licensed under GPL 3 (a less restrictive license may be negotiated) and is bundled with a bench marking routine. A graph with performance results is included at the bottom of this page.
 
 The implementations provide a stable search, meaning that if an array contains multiple duplicates the right most matching element is returned. I'll briefly describe each variant below.
 
@@ -12,7 +12,7 @@ By skipping the detection of equality until the binary search has finished (whic
 Tailed Binary Search
 --------------------
 
-This binary search variant has the same number of key checks as the standard binary search, except that the calculations are slightly less complicated, giving it a 1-2% performance gain without a single drawback. The tailed binary search is a good pick when key checks are expensive.
+This binary search variant has the same number of key checks as the standard binary search, except that the calculations are slightly less complicated, giving it a 1-2% performance gain without a single drawback. The tailed binary search is a good pick when key checks are very expensive.
 
 Boundless Binary Search
 -----------------------
