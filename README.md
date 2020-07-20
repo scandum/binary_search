@@ -7,7 +7,7 @@ The implementations provide a stable search, meaning that if an array contains m
 Deferred Detection of Equality
 ------------------------------
 
-By skipping the detection of equality until the binary search has finished (which does not allow for early termination) each loop exists of 1 key check, 1 integer check and 2 integer assignments. This is pretty much the standard algorithm that has been used since 1962.
+By skipping the detection of equality until the binary search has finished (which does not allow for early termination) each loop contains 1 key check, 1 integer check and 2 integer assignments. This is pretty much the standard algorithm that has been used since 1962.
 
 Tailed Binary Search
 --------------------
@@ -17,7 +17,7 @@ This binary search variant has the same number of key checks as the standard bin
 Boundless Binary Search
 -----------------------
 
-A boundless binary search is faster than the standard binary search since the loop exists of 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be greater than 5% when comparing 32 bit integers. It performs more key checks.
+A boundless binary search is faster than the standard binary search since the loop contains 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be greater than 5% when comparing 32 bit integers. It performs more key checks.
 
 Boundless Quaternary Binary Search
 ----------------------------------
