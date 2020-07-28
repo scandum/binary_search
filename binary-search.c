@@ -20,13 +20,16 @@
 */
 
 /*
-	Binary Search v1.3
+	Binary Search v1.4
+
+	Compile using: gcc -O3 binary-search.c
 */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
+#include <time.h>
 #include <math.h>
 #include <stdbool.h>
 
@@ -42,11 +45,13 @@ int standard_binary_search(int *array, int array_size, int key)
 	bot = 0;
 	i = array_size - 1;
 
-	while (bot != i)
+	while (bot < i)
 	{
 		mid = i - (i - bot) / 2;
 
-		if (++checks && key < array[mid])
+		++checks;
+
+		if (key < array[mid])
 		{
 			i = mid - 1;
 		}
@@ -55,7 +60,9 @@ int standard_binary_search(int *array, int array_size, int key)
 			bot = mid;
 		}
 	}
+
 	++checks;
+
 	if (key == array[i])
 	{
 		return i;
@@ -63,19 +70,21 @@ int standard_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// faster than the standard binary search with the same number of checks
+// slightly faster than the standard binary search
 
 int tailed_binary_search(int *array, int array_size, int key)
 {
 	register int i, mid, bot;
 
-	i = array_size - 1;
-	mid = i / 2;
 	bot = 0;
+	i = array_size -1;
+	mid = i / 2;
 
 	while (mid)
 	{
-		if (++checks && key < array[i - mid])
+		++checks;
+
+		if (key < array[i - mid])
 		{
 			i -= mid + 1;
 		}
@@ -86,14 +95,56 @@ int tailed_binary_search(int *array, int array_size, int key)
 		mid = (i - bot) / 2;
 	}
 
-	if (i > bot && ++checks && key < array[i])
+	if (bot < i && ++checks && key < array[i])
 	{
 		--i;
 	}
 
 	++checks;
 
-	if (i >= 0 && key == array[i])
+	if (key == array[i])
+	{
+		return i;
+	}
+	return -1;
+}
+
+
+// more key checks but simpler calculations
+
+int boundless_binary_search(int *array, int array_size, int key)
+{
+	register int mid, i;
+
+	++checks;
+
+	if (key < array[0])
+	{
+		return -1;
+	}
+
+	mid = i = array_size - 1;
+
+	while (mid > 3)
+	{
+		mid /= 2;
+
+		++checks;
+
+		if (key < array[i - mid])
+		{
+			i -= mid;
+		}
+	}
+
+	while (++checks && key < array[i])
+	{
+		--i;
+	}
+
+	++checks;
+
+	if (key == array[i])
 	{
 		return i;
 	}
@@ -104,37 +155,38 @@ int tailed_binary_search(int *array, int array_size, int key)
 
 int inbound_binary_search(int *array, int array_size, int key)
 {
-	register int mid, i, median;
+	register int mid, i;
 
-	median = mid = array_size / 2;
+	mid = array_size / 2;
 
 	++checks;
 
-	if (key < array[median])
+	if (key < array[mid])
 	{
 		i = 0;
 
-		while (mid)
+		while (mid > 1)
 		{
 			mid /= 2;
 
 			++checks;
+
 			if (key > array[i + mid])
 			{
 				i += mid + 1;
-
-				if (i == median)
-				{
-					return -1;
-				}
 			}
+		}
+
+		if (++checks && key > array[i])
+		{
+			++i;
 		}
 	}
 	else
 	{
 		i = array_size - 1;
 
-		while (mid)
+		while (mid > 1)
 		{
 			mid /= 2;
 
@@ -143,12 +195,12 @@ int inbound_binary_search(int *array, int array_size, int key)
 			if (key < array[i - mid])
 			{
 				i -= mid + 1;
-
-				if (i == median)
-				{
-					break;
-				}
 			}
+		}
+
+		if (++checks && key < array[i])
+		{
+			--i;
 		}
 	}
 
@@ -161,42 +213,7 @@ int inbound_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// more key checks but simpler calculations
-
-int boundless_binary_search(int *array, int array_size, int key)
-{
-	register int mid, i;
-
-	mid = i = array_size - 1;
-
-	if (key < array[0])
-	{
-		return -1;
-	}
-
-	while (mid > 3)
-	{
-		mid /= 2;
-
-		if (++checks && key < array[i - mid])
-		{
-			i -= mid;
-		}
-	}
-
-	while (++checks && key < array[i])
-	{
-		--i;
-	}
-
-	if (++checks && key == array[i])
-	{
-		return i;
-	}
-	return -1;
-}
-
-// more key checks but faster execution
+// more key checks but better performance on large arrays
 
 int boundless_quaternary_search(int *array, int array_size, int key)
 {
@@ -219,20 +236,25 @@ int boundless_quaternary_search(int *array, int array_size, int key)
 
 		if (key < array[i - mid])
 		{
-			i -= mid;
-
-			++checks;
-
-			if (key < array[i - mid])
+			if (key < array[i - mid * 2])
 			{
-				i -= mid;
-
-				++checks;
-
-				if (key < array[i - mid])
+				if (key < array[i - mid * 3])
 				{
-					i -= mid;
+					++checks;
+					++checks;
+					i -= mid * 3;
 				}
+				else
+				{
+					++checks;
+					++checks;
+					i -= mid * 2;
+				}
+			}
+			else
+			{
+				++checks;
+				i -= mid;
 			}
 		}
 	}
@@ -251,21 +273,123 @@ int boundless_quaternary_search(int *array, int array_size, int key)
 	return -1;
 }
 
+// slightly more key checks and better performance on large arrays
+
+int inbound_quaternary_search(int *array, int array_size, int key)
+{
+	register int mid, i;
+
+	mid = array_size / 2;
+
+	++checks;
+
+	if (key < array[mid])
+	{
+		i = 0;
+
+		while (mid > 7)
+		{
+			mid /= 4;
+
+			++checks;
+
+			if (key >= array[i + mid])
+			{
+				if (key >= array[i + mid * 2])
+				{
+					if (key >= array[i + mid * 3])
+					{
+						++checks;
+						++checks;
+						i += mid * 3;
+					}
+					else
+					{
+						++checks;
+						++checks;
+						i += mid * 2;
+					}
+				}
+				else
+				{
+					++checks;
+					i += mid;
+				}
+			}
+		}
+		while (++checks && key > array[i])
+		{
+			++i;
+		}
+	}
+	else
+	{
+		i = array_size - 1;
+
+		while (mid > 7)
+		{
+			mid /= 4;
+
+			++checks;
+
+			if (key < array[i - mid])
+			{
+				if (key < array[i - mid * 2])
+				{
+					if (key < array[i - mid * 3])
+					{
+						++checks; ++checks;
+						i -= mid * 3;
+					}
+					else
+					{
+						++checks; ++checks;
+						i -= mid * 2;
+					}
+				}
+				else
+				{
+					++checks;
+					i -= mid;
+				}
+			}
+		}
+		while (++checks && key < array[i])
+		{
+			--i;
+		}
+	}
+
+	++checks;
+
+	if (key == array[i])
+	{
+		return i;
+	}
+	return -1;
+}
+
+
 
 // requires an even distribution
 
-int interpolated_search(int *array, int array_size, int key)
+int boundless_interpolated_search(int *array, int array_size, int key)
 {
 	register int mid, i, min, max;
 
-	if (++checks && key <= (min = array[0]))
+	++checks;
+
+	if (key < array[0])
 	{
-		return ++checks && key == min ? 0 : -1;
+		return -1;
 	}
+	min = array[0];
 
 	i = array_size - 1;
 
-	if (++checks && key >= (max = array[i]))
+	++checks;
+
+	if (key >= (max = array[i]))
 	{
 		return ++checks && key == max ? i : -1;
 	}
@@ -286,7 +410,9 @@ int interpolated_search(int *array, int array_size, int key)
 				break;
 			}
 
-			if (++checks && key > array[i + mid])
+			++checks;
+
+			if (key > array[i + mid])
 			{
 				i += mid;
 			}
@@ -297,16 +423,18 @@ int interpolated_search(int *array, int array_size, int key)
 			mid *= 2;
 		}
 
-		while (mid)
+		while (mid > 3)
 		{
 			mid /= 2;
 
-			if (++checks && key > array[i + mid])
+			++checks;
+
+			if (key > array[i + mid])
 			{
 				i += mid;
 			}
 		}
-		if (++checks && key > array[i])
+		while (++checks && key > array[i])
 		{
 			++i;
 		}
@@ -323,7 +451,9 @@ int interpolated_search(int *array, int array_size, int key)
 				break;
 			}
 
-			if (++checks && key < array[i - mid])
+			++checks;
+
+			if (key < array[i - mid])
 			{
 				i -= mid;
 			}
@@ -334,7 +464,7 @@ int interpolated_search(int *array, int array_size, int key)
 			mid *= 2;
 		}
 
-		while (mid)
+		while (mid > 3)
 		{
 			mid /= 2;
 
@@ -343,7 +473,7 @@ int interpolated_search(int *array, int array_size, int key)
 				i -= mid;
 			}
 		}
-		if (++checks && key < array[i])
+		while (++checks && key < array[i])
 		{
 			--i;
 		}
@@ -388,7 +518,7 @@ void execute(int (*algo_func)(int *, int, int), const char * algo_name)
 			if (algo_func(array, max, rand() % top) >= 0)
 			{
 				hit++;
-			}
+			}	
 			else
 			{
 				miss++;
@@ -402,7 +532,8 @@ void execute(int (*algo_func)(int *, int, int), const char * algo_name)
 			best = end - start;
 		}
 	}
-	printf(" %d hits %d misses %9d checks in %f seconds (%s)\n", hit, miss, checks, best / 1000000.0, algo_name);
+	printf("| %30s | %10d | %10d | %10d | %10d | %10f |\n", algo_name, max, hit, miss, checks, best / 1000000.0);
+
 }
 
 #define run(algo) execute(&algo, #algo)
@@ -414,7 +545,7 @@ int main(int argc, char **argv)
 	max = 100000;
 	loop = 10000;
 	density = 100; // max * density should stay under 2 billion
-	runs = 100;
+	runs = 1000;
 
 	if (argc > 1)
 		max = atoi(argv[1]);
@@ -430,7 +561,13 @@ int main(int argc, char **argv)
 
 	array = malloc(max * sizeof(int));
 
-	srand(time(NULL));
+	if ((long long) max * (long long) density > 2000000000)
+	{
+		density = 2;
+	}
+
+//	srand(time(NULL));
+	srand(1);
 
 	rnd = rand();
 
@@ -443,6 +580,9 @@ int main(int argc, char **argv)
 
 	printf("\n\nEven distribution with %d 32 bit integers\n\n", max);
 
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
+
 	// Trial run
 
 	run(standard_binary_search);
@@ -451,10 +591,33 @@ int main(int argc, char **argv)
 
 	run(standard_binary_search);
 	run(tailed_binary_search);
-	run(inbound_binary_search);
 	run(boundless_binary_search);
+	run(inbound_binary_search);
 	run(boundless_quaternary_search);
-	run(interpolated_search);
+	run(inbound_quaternary_search);
+	run(boundless_interpolated_search);
+
+	for (cnt = 0, val = 0 ; cnt < max / 8 ; cnt++)
+	{
+		array[cnt] = val++;
+	}
+
+	for ( ; cnt < max ; cnt++)
+	{
+		array[cnt] = (val += rand() % density + 1);
+	}
+
+	top = array[max - 1] + 2;
+
+	printf("\n\nUneven distribution with %d 32 bit integers\n\n", max);
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
+	// Trial run
+
+	run(standard_binary_search);
+
+	// Begin
+	run(boundless_interpolated_search);
 
 	return 0;
 }
