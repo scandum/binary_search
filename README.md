@@ -1,8 +1,8 @@
-The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since. Below I'll describe several novel variants with improved performance. The most notable variant, the quaternary binary search, executes up to 25% faster on 32 bit integers.
+The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since. Below I'll describe several novel variants with improved performance. The most notable variant, the quaternary binary search, consistently executes up to 25% faster on 32 bit integers.
 
-A source code implementation in C is available licensed under GPL 3 (a less restrictive license may be negotiated) and is bundled with a bench marking routine. A graph with performance results is included at the bottom of this page.
+A source code implementation in C is available licensed under GPL 3 (a less restrictive license may be negotiated) and is bundled with a bench marking routine. A graph with performance results is included at the bottom of this page. Keep in mind performance will vary depending on hardware and compiler optimizations.
 
-The implementations provide a stable search, meaning that if an array contains multiple duplicates the right most matching element is returned. I'll briefly describe each variant below.
+I'll briefly describe each variant below.
 
 Deferred Detection of Equality
 ------------------------------
@@ -12,92 +12,116 @@ By skipping the detection of equality until the binary search has finished (whic
 Tailed Binary Search
 --------------------
 
-This binary search variant has the same number of key checks as the standard binary search, except that the calculations are slightly less complicated, giving it a 1-2% performance gain without a single drawback. The tailed binary search is a good pick when key checks are very expensive.
+This binary search variant has the same number of key checks as the standard binary search, except that the calculations are slightly less complicated, giving it a slight performance gain without drawbacks.
 
 Boundless Binary Search
 -----------------------
 
-A boundless binary search is faster than the standard binary search since the loop contains 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be greater than 5% when comparing 32 bit integers. It performs more key checks.
+A boundless binary search is faster than the standard binary search since the loop contains 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be between 5% and 40% when comparing 32 bit integers. It performs more key checks.
 
 Boundless Quaternary Binary Search
 ----------------------------------
 
-The boundless quaternary binary search has more key checks than the boundless binary search but runs faster. In most of my tests it gives a performance gain between 15% and 25% when comparing 32 bit integers.
+The boundless quaternary binary search has more key checks than the boundless binary search but runs faster on large arrays. In most of my tests it gives a performance gain between 15% and 25% when comparing 32 bit integers.
 
 Inbound Binary search
 ---------------------
 
-Due to boundary issues the mid - 1 optimization used in the standard search cannot easily be used in the boundless binary search. The inbound binary search solves this problem and subsequently has fewer key checks than the boundless search. While it's not as fast as the quaternary binary search it might have some utility when key checks are expensive.
+Due to boundary issues the mid - 1 optimization used in the standard search cannot easily be used in the boundless binary search. The inbound binary search solves this problem and allows fewer key checks than the boundless search. It might have some utility when key checks are expensive.
+
+Inbound Quaternary Binary search
+--------------------------------
+Like the boundless quaternary binary search, but with fewer key checks. Overall performance is similar.
 
 Boundless Interpolated Binary Search
 ------------------------------------
 
-When you have an even distribution you can make an educated guess as to the location of the index. Due to the expense of the initial check and error correction, the interpolated binary search is unlikely to outperform other binary searches on arrays with less than 100 elements. When the distribution is uneven performance will drop quickly, so the utility of the interpolated binary search is limited.
+When you have an even distribution you can make an educated guess as to the location of the index. Due to the expense of the initial check and error correction, the interpolated binary search is unlikely to outperform other binary searches on arrays with less than 100 elements. When the distribution is uneven performance will drop, but not significantly.
 
 Benchmark graph
 ---------------
+The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 100000, and 1000000 elements on an Intel i3 quad-core processor. The Y axis lists the execution time in microseconds.
 
 ![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search.png)
 
-The above graph shows the execution speed of 10 million searches on arrays with 10, 100, 1000, 10000 and 100000 elements on an Intel quad-core processor. The Y axis lists the execution time in milliseconds.
-
-The tailed binary search (green) is in all cases more efficient than the standard binary search (red) while performing the same number of key checks. The graph should speak for itself.
-
 Benchmark tables
 ----------------
-The source code was compiled using `gcc -O3 binary-search.c`
+The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`
 
 Even distribution with 10 32 bit integers
-```
-4271170 checks in 0.000273 seconds (standard_binary_search)
-4271170 checks in 0.000266 seconds (tailed_binary_search)
-4838276 checks in 0.000283 seconds (inbound_binary_search)
-4986213 checks in 0.000271 seconds (boundless_binary_search)
-6257821 checks in 0.000257 seconds (boundless_quaternary_search)
-7410446 checks in 0.000303 seconds (interpolated_search)
-```
+
+|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
+|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|         standard_binary_search |         10 |     158357 |    9841643 |   42991533 |   0.000284 |
+|         standard_binary_search |         10 |     158357 |    9841643 |   42991533 |   0.000283 |
+|           tailed_binary_search |         10 |     158357 |    9841643 |   42991533 |   0.000276 |
+|        boundless_binary_search |         10 |     158357 |    9841643 |   58195179 |   0.000249 |
+|          inbound_binary_search |         10 |     158357 |    9841643 |   50000000 |   0.000282 |
+|    boundless_quaternary_search |         10 |     158357 |    9841643 |   61762418 |   0.000265 |
+|      inbound_quaternary_search |         10 |     158357 |    9841643 |   55400810 |   0.000271 |
+|  boundless_interpolated_search |         10 |     158357 |    9841643 |   66699093 |   0.000271 |
+
 Even distribution with 100 32 bit integers
-```
- 7714954 checks in 0.000528 seconds (standard_binary_search)
- 7714954 checks in 0.000499 seconds (tailed_binary_search)
- 7996715 checks in 0.000473 seconds (inbound_binary_search)
- 9008149 checks in 0.000462 seconds (boundless_binary_search)
-10990807 checks in 0.000403 seconds (boundless_quaternary_search)
- 8913905 checks in 0.000345 seconds (interpolated_search)
-```
+
+|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
+|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|         standard_binary_search |        100 |     188541 |    9811459 |   77168228 |   0.000492 |
+|         standard_binary_search |        100 |     188541 |    9811459 |   77168228 |   0.000491 |
+|           tailed_binary_search |        100 |     188541 |    9811459 |   77168228 |   0.000451 |
+|        boundless_binary_search |        100 |     188541 |    9811459 |   99635413 |   0.000330 |
+|          inbound_binary_search |        100 |     188541 |    9811459 |   80000000 |   0.000429 |
+|    boundless_quaternary_search |        100 |     188541 |    9811459 |  109846685 |   0.000383 |
+|      inbound_quaternary_search |        100 |     188541 |    9811459 |   95228258 |   0.000384 |
+|  boundless_interpolated_search |        100 |     188541 |    9811459 |   82681266 |   0.000310 |
+
 Even distribution with 1000 32 bit integers
-```
-10978228 checks in 0.000750 seconds (standard_binary_search)
-10978228 checks in 0.000727 seconds (tailed_binary_search)
-10998884 checks in 0.000691 seconds (inbound_binary_search)
-12567988 checks in 0.000677 seconds (boundless_binary_search)
-14971660 checks in 0.000557 seconds (boundless_quaternary_search)
- 9843622 checks in 0.000457 seconds (interpolated_search)
-```
+
+|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
+|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|         standard_binary_search |       1000 |     194868 |    9805132 |  109697960 |   0.000729 |
+|         standard_binary_search |       1000 |     194868 |    9805132 |  109697960 |   0.000728 |
+|           tailed_binary_search |       1000 |     194868 |    9805132 |  109697960 |   0.000638 |
+|        boundless_binary_search |       1000 |     194868 |    9805132 |  136000769 |   0.000438 |
+|          inbound_binary_search |       1000 |     194868 |    9805132 |  110000000 |   0.000592 |
+|    boundless_quaternary_search |       1000 |     194868 |    9805132 |  149498206 |   0.000498 |
+|      inbound_quaternary_search |       1000 |     194868 |    9805132 |  143213946 |   0.000477 |
+|  boundless_interpolated_search |       1000 |     194868 |    9805132 |  101245246 |   0.000348 |
+
 Even distribution with 10000 32 bit integers
-```
-14362424 checks in 0.000960 seconds (standard_binary_search)
-14362424 checks in 0.000940 seconds (tailed_binary_search)
-14999472 checks in 0.000896 seconds (inbound_binary_search)
-15879598 checks in 0.000886 seconds (boundless_binary_search)
-18629780 checks in 0.000764 seconds (boundless_quaternary_search)
-12435840 checks in 0.000556 seconds (interpolated_search)
-```
+
+|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
+|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|         standard_binary_search |      10000 |     196724 |    9803276 |  143596482 |   0.000950 |
+|         standard_binary_search |      10000 |     196724 |    9803276 |  143596482 |   0.000950 |
+|           tailed_binary_search |      10000 |     196724 |    9803276 |  143596482 |   0.000873 |
+|        boundless_binary_search |      10000 |     196724 |    9803276 |  168770687 |   0.000480 |
+|          inbound_binary_search |      10000 |     196724 |    9803276 |  150000000 |   0.000793 |
+|    boundless_quaternary_search |      10000 |     196724 |    9803276 |  186344773 |   0.000628 |
+|      inbound_quaternary_search |      10000 |     196724 |    9803276 |  175777209 |   0.000607 |
+|  boundless_interpolated_search |      10000 |     196724 |    9803276 |  116021998 |   0.000414 |
+
 Even distribution with 100000 32 bit integers
-```
-17688655 checks in 0.001256 seconds (standard_binary_search)
-17688655 checks in 0.001216 seconds (tailed_binary_search)
-17999976 checks in 0.001166 seconds (inbound_binary_search)
-19040762 checks in 0.001161 seconds (boundless_binary_search)
-22352836 checks in 0.001009 seconds (boundless_quaternary_search)
-16020004 checks in 0.000690 seconds (interpolated_search)
-```
+
+|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
+|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|         standard_binary_search |     100000 |     197875 |    9802125 |  176901757 |   0.001243 |
+|         standard_binary_search |     100000 |     197875 |    9802125 |  176901757 |   0.001243 |
+|           tailed_binary_search |     100000 |     197875 |    9802125 |  176901757 |   0.001139 |
+|        boundless_binary_search |     100000 |     197875 |    9802125 |  200406343 |   0.000710 |
+|          inbound_binary_search |     100000 |     197875 |    9802125 |  180000000 |   0.001044 |
+|    boundless_quaternary_search |     100000 |     197875 |    9802125 |  223608878 |   0.000862 |
+|      inbound_quaternary_search |     100000 |     197875 |    9802125 |  208351360 |   0.000854 |
+|  boundless_interpolated_search |     100000 |     197875 |    9802125 |  146245804 |   0.000515 |
+
 Even distribution with 1000000 32 bit integers
-```
-20951514 checks in 0.001773 seconds (standard_binary_search)
-20951514 checks in 0.001721 seconds (tailed_binary_search)
-21000000 checks in 0.001668 seconds (inbound_binary_search)
-22528861 checks in 0.001667 seconds (boundless_binary_search)
-26109365 checks in 0.001493 seconds (boundless_quaternary_search)
-19301928 checks in 0.001026 seconds (interpolated_search)
-```
+
+|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
+|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|         standard_binary_search |    1000000 |     197423 |    9802577 |  209516052 |   0.001728 |
+|         standard_binary_search |    1000000 |     197423 |    9802577 |  209516052 |   0.001728 |
+|           tailed_binary_search |    1000000 |     197423 |    9802577 |  209516052 |   0.001609 |
+|        boundless_binary_search |    1000000 |     197423 |    9802577 |  235273893 |   0.001343 |
+|          inbound_binary_search |    1000000 |     197423 |    9802577 |  210000000 |   0.001509 |
+|    boundless_quaternary_search |    1000000 |     197423 |    9802577 |  261110371 |   0.001314 |
+|      inbound_quaternary_search |    1000000 |     197423 |    9802577 |  254735155 |   0.001276 |
+|  boundless_interpolated_search |    1000000 |     197423 |    9802577 |  158754364 |   0.000707 |
