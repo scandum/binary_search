@@ -9,6 +9,11 @@ Deferred Detection of Equality
 
 By skipping the detection of equality until the binary search has finished (which does not allow for early termination) each loop contains 1 key check, 1 integer check and 2 integer assignments. This is pretty much the standard algorithm that has been used since 1962.
 
+Pointer Optimizations
+---------------------
+
+You can get another 10% performance boost by using pointer operations. I forgo such optimizations in the C implementation to keep things as readable as possible.
+
 Tailed Binary Search
 --------------------
 
@@ -17,7 +22,7 @@ This binary search variant has the same number of key checks as the standard bin
 Boundless Binary Search
 -----------------------
 
-A boundless binary search is faster than the standard binary search since the loop contains 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be between 5% and 40% when comparing 32 bit integers. It performs more key checks.
+A boundless binary search is faster than the standard binary search since the loop contains 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be around 30-40% when comparing 32 bit integers. It performs more key checks.
 
 Boundless Quaternary Binary Search
 ----------------------------------
@@ -27,7 +32,7 @@ The boundless quaternary binary search has more key checks than the boundless bi
 Inbound Binary search
 ---------------------
 
-Due to boundary issues the mid - 1 optimization used in the standard search cannot easily be used in the boundless binary search. The inbound binary search solves this problem and allows fewer key checks than the boundless search. It might have some utility when key checks are expensive.
+Due to boundary issues the mid - 1 optimization used in the standard search cannot easily be used in the boundless binary search. The inbound binary search solves this problem and allows fewer key checks than the boundless search. It is a good choice when key checks are expensive.
 
 Inbound Quaternary Binary search
 --------------------------------
