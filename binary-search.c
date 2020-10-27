@@ -70,6 +70,27 @@ int standard_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
+int branchless_binary_search(int *array, int array_size, int key)
+{
+    int lower, half, n, middle;
+
+    lower = 0;
+    n = array_size;
+    while (half = n/2) {
+	middle = lower + half;
+	++checks;
+	lower = ((array[middle]) <= key) ? middle : lower;
+	n -= half;
+    }
+
+    ++checks;
+    if (key == array[lower]) {
+	return lower;
+    }
+    return -1;
+}
+
+
 // slightly faster than the standard binary search
 
 int tailed_binary_search(int *array, int array_size, int key)
@@ -596,6 +617,7 @@ int main(int argc, char **argv)
 	run(boundless_quaternary_search);
 	run(inbound_quaternary_search);
 	run(boundless_interpolated_search);
+	run(branchless_binary_search);
 
 	for (cnt = 0, val = 0 ; cnt < max / 8 ; cnt++)
 	{
@@ -618,6 +640,7 @@ int main(int argc, char **argv)
 
 	// Begin
 	run(boundless_interpolated_search);
+	run(branchless_binary_search);
 
 	return 0;
 }
