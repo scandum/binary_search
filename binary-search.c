@@ -20,7 +20,7 @@
 */
 
 /*
-	Binary Search v1.4
+	Binary Search v1.5
 
 	Compile using: gcc -O3 binary-search.c
 */
@@ -116,18 +116,11 @@ int boundless_binary_search(int *array, int array_size, int key)
 {
 	register int mid, i;
 
-	++checks;
+	i = mid = array_size - 1;
 
-	if (key < array[0])
+	while (mid > 1)
 	{
-		return -1;
-	}
-
-	mid = i = array_size - 1;
-
-	while (mid > 3)
-	{
-		mid /= 2;
+		mid -= mid >> 1;
 
 		++checks;
 
@@ -137,9 +130,9 @@ int boundless_binary_search(int *array, int array_size, int key)
 		}
 	}
 
-	while (++checks && key < array[i])
+	if (i && ++checks && key < array[i])
 	{
-		--i;
+		i--;
 	}
 
 	++checks;
@@ -151,13 +144,13 @@ int boundless_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// slightly more key checks with simpler calculations
+// fewer keychecks than boundless
 
 int inbound_binary_search(int *array, int array_size, int key)
 {
 	register int mid, i;
 
-	mid = array_size / 2;
+	mid = array_size - array_size / 2;
 
 	++checks;
 
@@ -167,19 +160,14 @@ int inbound_binary_search(int *array, int array_size, int key)
 
 		while (mid > 1)
 		{
-			mid /= 2;
+			mid -= mid >> 1;
 
 			++checks;
 
-			if (key > array[i + mid])
+			if (key >= array[i + mid])
 			{
-				i += mid + 1;
+				i += mid;
 			}
-		}
-
-		if (++checks && key > array[i])
-		{
-			++i;
 		}
 	}
 	else
@@ -188,19 +176,14 @@ int inbound_binary_search(int *array, int array_size, int key)
 
 		while (mid > 1)
 		{
-			mid /= 2;
+			mid -= mid >> 1;
 
 			++checks;
 
-			if (key < array[i - mid])
+			if (key <= array[i - mid])
 			{
-				i -= mid + 1;
+				i -= mid;
 			}
-		}
-
-		if (++checks && key < array[i])
-		{
-			--i;
 		}
 	}
 
@@ -213,7 +196,38 @@ int inbound_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// more key checks but better performance on large arrays
+// fewer keychecks than boundless
+
+int monobound_binary_search(int *array, int array_size, int key)
+{
+	register int bot, mid, top;
+
+	bot = 0;
+	top = array_size;
+
+	while (top > 1)
+	{
+		mid = top >> 1;
+
+		++checks;
+
+		if (key >= array[bot + mid])
+		{
+			bot += mid;
+		}
+		top -= mid;
+	}
+
+	++checks;
+
+	if (key == array[bot])
+	{
+		return bot;
+	}
+	return -1;
+}
+
+// better performance on very large arrays
 
 int boundless_quaternary_search(int *array, int array_size, int key)
 {
@@ -273,7 +287,7 @@ int boundless_quaternary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// slightly more key checks and better performance on large arrays
+// better performance on very large arrays
 
 int inbound_quaternary_search(int *array, int array_size, int key)
 {
@@ -368,7 +382,6 @@ int inbound_quaternary_search(int *array, int array_size, int key)
 	}
 	return -1;
 }
-
 
 
 // requires an even distribution
@@ -532,7 +545,7 @@ void execute(int (*algo_func)(int *, int, int), const char * algo_name)
 			best = end - start;
 		}
 	}
-	printf("| %30s | %10d | %10d | %10d | %10d | %10f |\n", algo_name, max, hit, miss, checks, best / 1000000.0);
+	printf("| %40s | %10d | %10d | %10d | %10d | %10f |\n", algo_name, max, hit, miss, checks, best / 1000000.0);
 
 }
 
@@ -544,7 +557,7 @@ int main(int argc, char **argv)
 
 	max = 100000;
 	loop = 10000;
-	density = 100; // max * density should stay under 2 billion
+	density = 10; // max * density should stay under 2 billion
 	runs = 1000;
 
 	if (argc > 1)
@@ -566,8 +579,8 @@ int main(int argc, char **argv)
 		density = 2;
 	}
 
-//	srand(time(NULL));
-	srand(1);
+	srand(time(NULL));
+//	srand(1);
 
 	rnd = rand();
 
@@ -580,22 +593,19 @@ int main(int argc, char **argv)
 
 	printf("\n\nEven distribution with %d 32 bit integers\n\n", max);
 
-	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
-	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
-
-	// Trial run
-
-	run(standard_binary_search);
-
-	// Begin
+	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
+	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
 
 	run(standard_binary_search);
 	run(tailed_binary_search);
 	run(boundless_binary_search);
 	run(inbound_binary_search);
+	run(monobound_binary_search);
 	run(boundless_quaternary_search);
 	run(inbound_quaternary_search);
 	run(boundless_interpolated_search);
+
+	// uneven distribution
 
 	for (cnt = 0, val = 0 ; cnt < max / 8 ; cnt++)
 	{
@@ -610,13 +620,12 @@ int main(int argc, char **argv)
 	top = array[max - 1] + 2;
 
 	printf("\n\nUneven distribution with %d 32 bit integers\n\n", max);
-	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
-	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
-	// Trial run
+
+	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
+	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
 
 	run(standard_binary_search);
-
-	// Begin
+	run(inbound_quaternary_search);
 	run(boundless_interpolated_search);
 
 	return 0;
