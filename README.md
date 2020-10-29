@@ -34,8 +34,14 @@ Inbound Binary search
 
 Due to boundary issues the mid - 1 optimization used in the standard search cannot easily be used in the boundless binary search. The inbound binary search solves this problem and allows fewer key checks than the boundless search. It is a good choice when key checks are expensive.
 
+Monobound Binary search
+-----------------------
+
+While the traditional binary search has two bounds, this variant has one, and deals with rounding problems while at it.
+
 Inbound Quaternary Binary search
 --------------------------------
+
 Like the boundless quaternary binary search, but with fewer key checks. Overall performance is similar.
 
 Boundless Interpolated Binary Search
