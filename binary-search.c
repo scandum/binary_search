@@ -276,26 +276,21 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 {
 	register int mid, i, min, max;
 
-	++checks;
-
-	if (key < array[0])
-	{
-		return -1;
-	}
-	min = array[0];
-
 	i = array_size - 1;
 
-	++checks;
-
-	if (key >= (max = array[i]))
+	if (i <= 0)
 	{
-		return ++checks && key == max ? i : -1;
+		return ++checks && array[0] == key ? 0 : -1;
 	}
+
+	min = array[0];
+	max = array[i];
 
 	i *= (float) (key - min) / (max - min);
 
-	if (++checks && key >= array[i])
+	++checks;
+
+	if (key >= array[i])
 	{
 		mid = 4;
 
@@ -366,7 +361,9 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 		{
 			mid = max >> 1;
 
-			if (++checks && key <= array[i - mid])
+			++checks;
+
+			if (key <= array[i - mid])
 			{
 				i -= mid;
 			}
@@ -374,7 +371,9 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 		}
 	}
 
-	if (++checks && key == array[i])
+	++checks;
+
+	if (key == array[i])
 	{
 		return i;
 	}
@@ -463,8 +462,8 @@ int main(int argc, char **argv)
 		density = 2;
 	}
 
-	srand(time(NULL));
-//	srand(1);
+//	srand(time(NULL));
+	srand(1);
 
 	rnd = rand();
 
