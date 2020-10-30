@@ -109,30 +109,22 @@ int tailed_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-
-// more key checks but simpler calculations
-
 int boundless_binary_search(int *array, int array_size, int key)
 {
 	register int mid, i;
 
-	i = mid = array_size - 1;
+	i = 0;
+	mid = array_size;
 
 	while (mid > 1)
 	{
-		mid -= mid >> 1;
-
 		++checks;
 
-		if (key < array[i - mid])
+		if (key >= array[i + mid / 2])
 		{
-			i -= mid;
+			i += mid / 2;
 		}
-	}
-
-	if (i && ++checks && key < array[i])
-	{
-		i--;
+		mid = mid / 2 + mid % 2;
 	}
 
 	++checks;
@@ -143,8 +135,6 @@ int boundless_binary_search(int *array, int array_size, int key)
 	}
 	return -1;
 }
-
-// fewer keychecks than boundless
 
 int inbound_binary_search(int *array, int array_size, int key)
 {
@@ -160,7 +150,7 @@ int inbound_binary_search(int *array, int array_size, int key)
 
 		while (mid > 1)
 		{
-			mid -= mid >> 1;
+			mid -= mid / 2;
 
 			++checks;
 
@@ -176,7 +166,7 @@ int inbound_binary_search(int *array, int array_size, int key)
 
 		while (mid > 1)
 		{
-			mid -= mid >> 1;
+			mid -= mid / 2;
 
 			++checks;
 
@@ -196,14 +186,67 @@ int inbound_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// fewer keychecks than boundless
-
 int monobound_binary_search(int *array, int array_size, int key)
 {
 	register int bot, mid, top;
 
 	bot = 0;
 	top = array_size;
+
+	while (top > 1)
+	{
+		mid = top / 2;
+
+		++checks;
+
+		if (key >= array[bot + mid])
+		{
+			bot += mid;
+		}
+		top -= mid;
+	}
+
+	++checks;
+
+	if (key == array[bot])
+	{
+		return bot;
+	}
+	return -1;
+}
+
+// better performance on large arrays
+
+int monobound_quaternary_search(int *array, int array_size, int key)
+{
+	register int bot, mid, top;
+
+	bot = 0;
+	top = array_size;
+
+	while (top > 255)
+	{
+		mid = top >> 2;
+
+		++checks;
+		if (key >= array[bot + mid])
+		{
+			bot += mid;
+
+			++checks;
+			if (key >= array[bot + mid])
+			{
+				bot += mid;
+
+				++checks;
+				if (key >= array[bot + mid])
+				{
+					bot += mid;
+				}
+			}
+		}
+		top -= mid * 3;
+	}
 
 	while (top > 1)
 	{
@@ -227,166 +270,9 @@ int monobound_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// better performance on very large arrays
-
-int boundless_quaternary_search(int *array, int array_size, int key)
-{
-	register int mid, i;
-
-	++checks;
-
-	if (key < array[0])
-	{
-		return -1;
-	}
-
-	mid = i = array_size - 1;
-
-	while (mid > 7)
-	{
-		mid /= 4;
-
-		++checks;
-
-		if (key < array[i - mid])
-		{
-			if (key < array[i - mid * 2])
-			{
-				if (key < array[i - mid * 3])
-				{
-					++checks;
-					++checks;
-					i -= mid * 3;
-				}
-				else
-				{
-					++checks;
-					++checks;
-					i -= mid * 2;
-				}
-			}
-			else
-			{
-				++checks;
-				i -= mid;
-			}
-		}
-	}
-
-	while (++checks && key < array[i])
-	{
-		--i;
-	}
-
-	++checks;
-
-	if (key == array[i])
-	{
-		return i;
-	}
-	return -1;
-}
-
-// better performance on very large arrays
-
-int inbound_quaternary_search(int *array, int array_size, int key)
-{
-	register int mid, i;
-
-	mid = array_size / 2;
-
-	++checks;
-
-	if (key < array[mid])
-	{
-		i = 0;
-
-		while (mid > 7)
-		{
-			mid /= 4;
-
-			++checks;
-
-			if (key >= array[i + mid])
-			{
-				if (key >= array[i + mid * 2])
-				{
-					if (key >= array[i + mid * 3])
-					{
-						++checks;
-						++checks;
-						i += mid * 3;
-					}
-					else
-					{
-						++checks;
-						++checks;
-						i += mid * 2;
-					}
-				}
-				else
-				{
-					++checks;
-					i += mid;
-				}
-			}
-		}
-		while (++checks && key > array[i])
-		{
-			++i;
-		}
-	}
-	else
-	{
-		i = array_size - 1;
-
-		while (mid > 7)
-		{
-			mid /= 4;
-
-			++checks;
-
-			if (key < array[i - mid])
-			{
-				if (key < array[i - mid * 2])
-				{
-					if (key < array[i - mid * 3])
-					{
-						++checks; ++checks;
-						i -= mid * 3;
-					}
-					else
-					{
-						++checks; ++checks;
-						i -= mid * 2;
-					}
-				}
-				else
-				{
-					++checks;
-					i -= mid;
-				}
-			}
-		}
-		while (++checks && key < array[i])
-		{
-			--i;
-		}
-	}
-
-	++checks;
-
-	if (key == array[i])
-	{
-		return i;
-	}
-	return -1;
-}
-
-
 // requires an even distribution
 
-int boundless_interpolated_search(int *array, int array_size, int key)
+int monobound_interpolated_search(int *array, int array_size, int key)
 {
 	register int mid, i, min, max;
 
@@ -411,21 +297,19 @@ int boundless_interpolated_search(int *array, int array_size, int key)
 
 	if (++checks && key >= array[i])
 	{
-		max = array_size - 1;
-
 		mid = 4;
 
 		while (1)
 		{
-			if (i + mid > max)
+			if (i + mid >= array_size)
 			{
-				mid = max - i;
+				mid = array_size - i;
 				break;
 			}
 
 			++checks;
 
-			if (key > array[i + mid])
+			if (key >= array[i + mid])
 			{
 				i += mid;
 			}
@@ -436,20 +320,19 @@ int boundless_interpolated_search(int *array, int array_size, int key)
 			mid *= 2;
 		}
 
-		while (mid > 3)
+		max = mid;
+
+		while (max > 1)
 		{
-			mid /= 2;
+			mid = max >> 1;
 
 			++checks;
 
-			if (key > array[i + mid])
+			if (key >= array[i + mid])
 			{
 				i += mid;
 			}
-		}
-		while (++checks && key > array[i])
-		{
-			++i;
+			max -= mid;
 		}
 	}
 	else
@@ -466,7 +349,7 @@ int boundless_interpolated_search(int *array, int array_size, int key)
 
 			++checks;
 
-			if (key < array[i - mid])
+			if (key <= array[i - mid])
 			{
 				i -= mid;
 			}
@@ -477,18 +360,17 @@ int boundless_interpolated_search(int *array, int array_size, int key)
 			mid *= 2;
 		}
 
-		while (mid > 3)
-		{
-			mid /= 2;
+		max = mid;
 
-			if (++checks && key < array[i - mid])
+		while (max > 1)
+		{
+			mid = max >> 1;
+
+			if (++checks && key <= array[i - mid])
 			{
 				i -= mid;
 			}
-		}
-		while (++checks && key < array[i])
-		{
-			--i;
+			max -= mid;
 		}
 	}
 
@@ -498,6 +380,8 @@ int boundless_interpolated_search(int *array, int array_size, int key)
 	}
 	return -1;
 }
+
+// benchmark
 
 long long utime()
 {
@@ -545,7 +429,7 @@ void execute(int (*algo_func)(int *, int, int), const char * algo_name)
 			best = end - start;
 		}
 	}
-	printf("| %40s | %10d | %10d | %10d | %10d | %10f |\n", algo_name, max, hit, miss, checks, best / 1000000.0);
+	printf("| %30s | %10d | %10d | %10d | %10d | %10f |\n", algo_name, max, hit, miss, checks, best / 1000000.0);
 
 }
 
@@ -593,17 +477,16 @@ int main(int argc, char **argv)
 
 	printf("\n\nEven distribution with %d 32 bit integers\n\n", max);
 
-	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
-	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
 
 	run(standard_binary_search);
 	run(tailed_binary_search);
 	run(boundless_binary_search);
 	run(inbound_binary_search);
 	run(monobound_binary_search);
-	run(boundless_quaternary_search);
-	run(inbound_quaternary_search);
-	run(boundless_interpolated_search);
+	run(monobound_quaternary_search);
+	run(monobound_interpolated_search);
 
 	// uneven distribution
 
@@ -621,12 +504,11 @@ int main(int argc, char **argv)
 
 	printf("\n\nUneven distribution with %d 32 bit integers\n\n", max);
 
-	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
-	printf("| %40s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
 
 	run(standard_binary_search);
-	run(inbound_quaternary_search);
-	run(boundless_interpolated_search);
+	run(monobound_interpolated_search);
 
 	return 0;
 }
