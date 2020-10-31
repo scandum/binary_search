@@ -40,7 +40,7 @@ int checks;
 
 int standard_binary_search(int *array, int array_size, int key)
 {
-	register int bot, mid, i;
+	int bot, mid, i;
 
 	bot = 0;
 	i = array_size - 1;
@@ -74,10 +74,10 @@ int standard_binary_search(int *array, int array_size, int key)
 
 int tailed_binary_search(int *array, int array_size, int key)
 {
-	register int i, mid, bot;
+	int i, mid, bot;
 
 	bot = 0;
-	i = array_size -1;
+	i = array_size - 1;
 	mid = i / 2;
 
 	while (mid)
@@ -111,7 +111,7 @@ int tailed_binary_search(int *array, int array_size, int key)
 
 int boundless_binary_search(int *array, int array_size, int key)
 {
-	register int mid, i;
+	unsigned int mid, i;
 
 	i = 0;
 	mid = array_size;
@@ -138,7 +138,7 @@ int boundless_binary_search(int *array, int array_size, int key)
 
 int inbound_binary_search(int *array, int array_size, int key)
 {
-	register int mid, i;
+	unsigned int mid, i;
 
 	mid = array_size - array_size / 2;
 
@@ -188,7 +188,7 @@ int inbound_binary_search(int *array, int array_size, int key)
 
 int monobound_binary_search(int *array, int array_size, int key)
 {
-	register int bot, mid, top;
+	unsigned int bot, mid, top;
 
 	bot = 0;
 	top = array_size;
@@ -219,14 +219,14 @@ int monobound_binary_search(int *array, int array_size, int key)
 
 int monobound_quaternary_search(int *array, int array_size, int key)
 {
-	register int bot, mid, top;
+	unsigned int bot, mid, top;
 
 	bot = 0;
 	top = array_size;
 
-	while (top > 255)
+	while (top >= 512)
 	{
-		mid = top >> 2;
+		mid = top / 4;
 
 		++checks;
 		if (key >= array[bot + mid])
@@ -250,7 +250,7 @@ int monobound_quaternary_search(int *array, int array_size, int key)
 
 	while (top > 1)
 	{
-		mid = top >> 1;
+		mid = top / 2;
 
 		++checks;
 
@@ -274,7 +274,8 @@ int monobound_quaternary_search(int *array, int array_size, int key)
 
 int monobound_interpolated_search(int *array, int array_size, int key)
 {
-	register int mid, i, min, max;
+	unsigned int top;
+	int mid, i, min, max;
 
 	i = array_size - 1;
 
@@ -286,7 +287,10 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 	min = array[0];
 	max = array[i];
 
-	i *= (float) (key - min) / (max - min);
+	if (max - min)
+	{
+		i *= (float) (key - min) / (max - min);
+	}
 
 	++checks;
 
@@ -315,11 +319,11 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 			mid *= 2;
 		}
 
-		max = mid;
+		top = mid;
 
-		while (max > 1)
+		while (top > 1)
 		{
-			mid = max >> 1;
+			mid = top / 2;
 
 			++checks;
 
@@ -327,7 +331,7 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 			{
 				i += mid;
 			}
-			max -= mid;
+			top -= mid;
 		}
 	}
 	else
@@ -355,11 +359,11 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 			mid *= 2;
 		}
 
-		max = mid;
+		top = mid;
 
-		while (max > 1)
+		while (top > 1)
 		{
-			mid = max >> 1;
+			mid = top / 2;
 
 			++checks;
 
@@ -367,7 +371,7 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 			{
 				i -= mid;
 			}
-			max -= mid;
+			top -= mid;
 		}
 	}
 
