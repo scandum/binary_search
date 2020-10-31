@@ -14,6 +14,11 @@ Pointer Optimizations
 
 You can get another 10% performance boost by using pointer operations. I forgo such optimizations in the C implementation to keep things as readable as possible.
 
+Unsigned Integer Optimization
+-----------------------------
+
+You can get a further performance boost by using unsigned instead of signed integers.
+
 Tailed Binary Search
 --------------------
 
