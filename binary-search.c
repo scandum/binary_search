@@ -20,7 +20,7 @@
 */
 
 /*
-	Binary Search v1.5
+	Binary Search v1.6
 
 	Compile using: gcc -O3 binary-search.c
 */
@@ -36,7 +36,7 @@
 int checks;
 
 
-// This is the standard binary search from text books
+// the standard binary search from text books
 
 int standard_binary_search(int *array, int array_size, int key)
 {
@@ -70,44 +70,7 @@ int standard_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-// slightly faster than the standard binary search
-
-int tailed_binary_search(int *array, int array_size, int key)
-{
-	int i, mid, bot;
-
-	bot = 0;
-	i = array_size - 1;
-	mid = i / 2;
-
-	while (mid)
-	{
-		++checks;
-
-		if (key < array[i - mid])
-		{
-			i -= mid + 1;
-		}
-		else
-		{
-			bot = i - mid;
-		}
-		mid = (i - bot) / 2;
-	}
-
-	if (bot < i && ++checks && key < array[i])
-	{
-		--i;
-	}
-
-	++checks;
-
-	if (key == array[i])
-	{
-		return i;
-	}
-	return -1;
-}
+// faster than the standard binary search, same number of checks
 
 int boundless_binary_search(int *array, int array_size, int key)
 {
@@ -122,9 +85,9 @@ int boundless_binary_search(int *array, int array_size, int key)
 
 		if (key >= array[i + mid / 2])
 		{
-			i += mid / 2;
+			i += mid++ / 2;
 		}
-		mid = mid / 2 + mid % 2;
+		mid /= 2;
 	}
 
 	++checks;
@@ -136,55 +99,7 @@ int boundless_binary_search(int *array, int array_size, int key)
 	return -1;
 }
 
-int inbound_binary_search(int *array, int array_size, int key)
-{
-	unsigned int mid, i;
-
-	mid = array_size - array_size / 2;
-
-	++checks;
-
-	if (key < array[mid])
-	{
-		i = 0;
-
-		while (mid > 1)
-		{
-			mid -= mid / 2;
-
-			++checks;
-
-			if (key >= array[i + mid])
-			{
-				i += mid;
-			}
-		}
-	}
-	else
-	{
-		i = array_size - 1;
-
-		while (mid > 1)
-		{
-			mid -= mid / 2;
-
-			++checks;
-
-			if (key <= array[i - mid])
-			{
-				i -= mid;
-			}
-		}
-	}
-
-	++checks;
-
-	if (key == array[i])
-	{
-		return i;
-	}
-	return -1;
-}
+// faster than the boundless binary search, more checks
 
 int monobound_binary_search(int *array, int array_size, int key)
 {
@@ -227,25 +142,28 @@ int monobound_quaternary_search(int *array, int array_size, int key)
 	while (top >= 512)
 	{
 		mid = top / 4;
+		top -= mid * 3;
 
 		++checks;
-		if (key >= array[bot + mid])
+		if (key < array[bot + mid])
 		{
-			bot += mid;
-
-			++checks;
-			if (key >= array[bot + mid])
-			{
-				bot += mid;
-
-				++checks;
-				if (key >= array[bot + mid])
-				{
-					bot += mid;
-				}
-			}
+			continue;
 		}
-		top -= mid * 3;
+		bot += mid;
+
+		++checks;
+		if (key < array[bot + mid])
+		{
+			continue;
+		}
+		bot += mid;
+
+		++checks;
+		if (key < array[bot + mid])
+		{
+			continue;
+		}
+		bot += mid;
 	}
 
 	while (top > 1)
@@ -274,20 +192,22 @@ int monobound_quaternary_search(int *array, int array_size, int key)
 
 int monobound_interpolated_search(int *array, int array_size, int key)
 {
-	unsigned int top;
-	int mid, i, min, max;
+	unsigned int top, mid, i;
+	int min, max;
 
-	i = array_size - 1;
+	++checks;
 
-	if (i <= 0)
+	if (key <= array[0] || array_size <= 1)
 	{
 		return ++checks && array[0] == key ? 0 : -1;
 	}
 
+	i = array_size - 1;
+
 	min = array[0];
 	max = array[i];
 
-	if (max - min)
+	if (max != min)
 	{
 		i *= (float) (key - min) / (max - min);
 	}
@@ -296,7 +216,7 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 
 	if (key >= array[i])
 	{
-		mid = 4;
+		mid = 64;
 
 		while (1)
 		{
@@ -336,11 +256,11 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 	}
 	else
 	{
-		mid = 4;
+		mid = 64;
 
 		while (1)
 		{
-			if (i - mid < 0)
+			if (i < mid)
 			{
 				mid = i;
 				break;
@@ -484,12 +404,12 @@ int main(int argc, char **argv)
 	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
 
 	run(standard_binary_search);
-	run(tailed_binary_search);
 	run(boundless_binary_search);
-	run(inbound_binary_search);
 	run(monobound_binary_search);
 	run(monobound_quaternary_search);
 	run(monobound_interpolated_search);
+
+	return 0;
 
 	// uneven distribution
 
