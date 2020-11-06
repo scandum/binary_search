@@ -19,30 +19,20 @@ Unsigned Integer Optimization
 
 You can get a further performance boost by using unsigned instead of signed integers.
 
-Tailed Binary Search
---------------------
-
-This binary search variant has the same number of key checks as the standard binary search, except that the calculations are slightly less complicated, giving it a slight performance gain without drawbacks.
-
 Boundless Binary Search
 -----------------------
 
-The boundless binary search is significantly faster than the standard binary search since the loop contains 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be around 40-60% when comparing 32 bit integers. It performs more key checks.
-
-Inbound Binary search
----------------------
-
-The inbound binary search has less complex computations than the boundless binary search. Performance is similar.
+The boundless binary search is faster than the standard binary search since the loop contains 1 key check 1 integer check and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be around 20% when comparing 32 bit integers.
 
 Monobound Binary search
 -----------------------
 
-The monobound binary search is similar to the boundless binary search but uses an extra variable to simplify calculations. It's slightly faster than the boundless binary search.
+The monobound binary search is similar to the boundless binary search but uses an extra variable to simplify calculations and performs more keychecks. It's up to 60% faster than the standard binary search when comparing 32 bit integers.
 
 Monobound Quaternary Binary Search
 ----------------------------------
 
-The monobound quaternary binary search has more key checks than the boundless binary search but runs faster on large arrays.
+The monobound quaternary binary search has more key checks than the monobound binary search but runs faster on large arrays.
 
 Monobound Interpolated Binary Search
 ------------------------------------
@@ -63,70 +53,58 @@ Even distribution with 10 32 bit integers
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |         10 |    1922330 |    8077670 |   41729205 |   0.000288 |
-|           tailed_binary_search |         10 |    1922330 |    8077670 |   41729205 |   0.000279 |
-|        boundless_binary_search |         10 |    1922330 |    8077670 |   50000000 |   0.000166 |
-|          inbound_binary_search |         10 |    1922330 |    8077670 |   50000000 |   0.000223 |
-|        monobound_binary_search |         10 |    1922330 |    8077670 |   50000000 |   0.000163 |
-|    monobound_quaternary_search |         10 |    1922330 |    8077670 |   50000000 |   0.000163 |
-|  monobound_interpolated_search |         10 |    1922330 |    8077670 |   56147405 |   0.000273 |
+|         standard_binary_search |         10 |    1722579 |    8277421 |   43102383 |   0.000295 |
+|        boundless_binary_search |         10 |    1722579 |    8277421 |   43102383 |   0.000279 |
+|        monobound_binary_search |         10 |    1722579 |    8277421 |   50000000 |   0.000159 |
+|    monobound_quaternary_search |         10 |    1722579 |    8277421 |   50000000 |   0.000160 |
+|  monobound_interpolated_search |         10 |    1722579 |    8277421 |   50350850 |   0.000335 |
 
 Even distribution with 100 32 bit integers
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |        100 |    1745744 |    8254256 |   76580993 |   0.000486 |
-|           tailed_binary_search |        100 |    1745744 |    8254256 |   76580993 |   0.000455 |
-|        boundless_binary_search |        100 |    1745744 |    8254256 |   80000000 |   0.000221 |
-|          inbound_binary_search |        100 |    1745744 |    8254256 |   80000000 |   0.000261 |
-|        monobound_binary_search |        100 |    1745744 |    8254256 |   80000000 |   0.000223 |
-|    monobound_quaternary_search |        100 |    1745744 |    8254256 |   80000000 |   0.000219 |
-|  monobound_interpolated_search |        100 |    1745744 |    8254256 |   70333100 |   0.000227 |
+|         standard_binary_search |        100 |    1759908 |    8240092 |   76848523 |   0.000493 |
+|        boundless_binary_search |        100 |    1759908 |    8240092 |   76848523 |   0.000446 |
+|        monobound_binary_search |        100 |    1759908 |    8240092 |   80000000 |   0.000204 |
+|    monobound_quaternary_search |        100 |    1759908 |    8240092 |   80000000 |   0.000203 |
+|  monobound_interpolated_search |        100 |    1759908 |    8240092 |   85634669 |   0.000355 |
 
 Even distribution with 1000 32 bit integers
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |       1000 |    1820767 |    8179233 |  109742541 |   0.000718 |
-|           tailed_binary_search |       1000 |    1820767 |    8179233 |  109742541 |   0.000653 |
-|        boundless_binary_search |       1000 |    1820767 |    8179233 |  110000000 |   0.000278 |
-|          inbound_binary_search |       1000 |    1820767 |    8179233 |  110000000 |   0.000317 |
-|        monobound_binary_search |       1000 |    1820767 |    8179233 |  110000000 |   0.000275 |
-|    monobound_quaternary_search |       1000 |    1820767 |    8179233 |  112403826 |   0.000302 |
-|  monobound_interpolated_search |       1000 |    1820767 |    8179233 |   82578991 |   0.000290 |
+|         standard_binary_search |       1000 |    1802066 |    8197934 |  109748966 |   0.000727 |
+|        boundless_binary_search |       1000 |    1802066 |    8197934 |  109748966 |   0.000630 |
+|        monobound_binary_search |       1000 |    1802066 |    8197934 |  110000000 |   0.000255 |
+|    monobound_quaternary_search |       1000 |    1802066 |    8197934 |  112311055 |   0.000289 |
+|  monobound_interpolated_search |       1000 |    1802066 |    8197934 |   98942421 |   0.000303 |
 
 Even distribution with 10000 32 bit integers
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |      10000 |    1819226 |    8180774 |  143609833 |   0.000941 |
-|           tailed_binary_search |      10000 |    1819226 |    8180774 |  143609833 |   0.000873 |
-|        boundless_binary_search |      10000 |    1819226 |    8180774 |  150000000 |   0.000361 |
-|          inbound_binary_search |      10000 |    1819226 |    8180774 |  150000000 |   0.000391 |
-|        monobound_binary_search |      10000 |    1819226 |    8180774 |  150000000 |   0.000356 |
-|    monobound_quaternary_search |      10000 |    1819226 |    8180774 |  157569839 |   0.000431 |
-|  monobound_interpolated_search |      10000 |    1819226 |    8180774 |   90551566 |   0.000369 |
+|         standard_binary_search |      10000 |    1822576 |    8177424 |  143575407 |   0.000952 |
+|        boundless_binary_search |      10000 |    1822576 |    8177424 |  143575407 |   0.000815 |
+|        monobound_binary_search |      10000 |    1822576 |    8177424 |  150000000 |   0.000324 |
+|    monobound_quaternary_search |      10000 |    1822576 |    8177424 |  157384779 |   0.000419 |
+|  monobound_interpolated_search |      10000 |    1822576 |    8177424 |  100454815 |   0.000290 |
 
 Even distribution with 100000 32 bit integers
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |     100000 |    1822967 |    8177033 |  176899894 |   0.001233 |
-|           tailed_binary_search |     100000 |    1822967 |    8177033 |  176899894 |   0.001136 |
-|        boundless_binary_search |     100000 |    1822967 |    8177033 |  180000000 |   0.000545 |
-|          inbound_binary_search |     100000 |    1822967 |    8177033 |  180000000 |   0.000567 |
-|        monobound_binary_search |     100000 |    1822967 |    8177033 |  180000000 |   0.000533 |
-|    monobound_quaternary_search |     100000 |    1822967 |    8177033 |  192482426 |   0.000611 |
-|  monobound_interpolated_search |     100000 |    1822967 |    8177033 |  145919023 |   0.000424 |
+|         standard_binary_search |     100000 |    1824396 |    8175604 |  176900392 |   0.001247 |
+|        boundless_binary_search |     100000 |    1824396 |    8175604 |  176900392 |   0.001073 |
+|        monobound_binary_search |     100000 |    1824396 |    8175604 |  180000000 |   0.000518 |
+|    monobound_quaternary_search |     100000 |    1824396 |    8175604 |  190007103 |   0.000553 |
+|  monobound_interpolated_search |     100000 |    1824396 |    8175604 |  100716422 |   0.000349 |
 
 Even distribution with 1000000 32 bit integers
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |    1000000 |    1817247 |    8182753 |  209512170 |   0.001726 |
-|           tailed_binary_search |    1000000 |    1817247 |    8182753 |  209512170 |   0.001614 |
-|        boundless_binary_search |    1000000 |    1817247 |    8182753 |  210000000 |   0.001121 |
-|          inbound_binary_search |    1000000 |    1817247 |    8182753 |  210000000 |   0.001146 |
-|        monobound_binary_search |    1000000 |    1817247 |    8182753 |  210000000 |   0.001083 |
-|    monobound_quaternary_search |    1000000 |    1817247 |    8182753 |  224990860 |   0.000979 |
-|  monobound_interpolated_search |    1000000 |    1817247 |    8182753 |  162257103 |   0.000604 |
+|         standard_binary_search |    1000000 |    1819563 |    8180437 |  209513570 |   0.001738 |
+|        boundless_binary_search |    1000000 |    1819563 |    8180437 |  209513570 |   0.001540 |
+|        monobound_binary_search |    1000000 |    1819563 |    8180437 |  210000000 |   0.001000 |
+|    monobound_quaternary_search |    1000000 |    1819563 |    8180437 |  224985387 |   0.000920 |
+|  monobound_interpolated_search |    1000000 |    1819563 |    8180437 |  120151866 |   0.000586 |
