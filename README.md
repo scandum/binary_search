@@ -22,7 +22,7 @@ You can get a further performance boost by using unsigned instead of signed inte
 Stability
 ---------
 
-All the implementations in binary_search.c should be stable. If you search an array containing the elements `[1][4][7][7][7][9]` and you search for the number `7`, it should return the right most index. This is needed if you want to use a binary search in a stable sorting algorithm, and the binary search being stable shouldn't slow down performance.
+All the implementations in binary_search.c should be stable. If you search an array containing the elements `[1][4][7][7][7][9]` and you search for the number `7`, it should return the right most index. This is needed if you want to use a binary search in a stable sorting algorithm. The binary search being stable shouldn't notably slow down performance.
 
 Zero length array
 -----------------
