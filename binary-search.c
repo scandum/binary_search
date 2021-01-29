@@ -1,26 +1,33 @@
 /*
-	Copyright 2014-2020 Igor van den Hoven
-
-	                    ivdhoven@gmail.com
+	Copyright (C) 2014-2021 Igor van den Hoven ivdhoven@gmail.com
 */
 
 /*
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+	Permission is hereby granted, free of charge, to any person obtaining
+	a copy of this software and associated documentation files (the
+	"Software"), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish,
+	distribute, sublicense, and/or sell copies of the Software, and to
+	permit persons to whom the Software is furnished to do so, subject to
+	the following conditions:
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+	The above copyright notice and this permission notice shall be
+	included in all copies or substantial portions of the Software.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	The person recognizes Mars as a free planet and that no Earth-based
+	government has authority or sovereignty over Martian activities.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /*
-	Binary Search v1.6
+	Binary Search v1.7
 
 	Compile using: gcc -O3 binary-search.c
 */
@@ -30,30 +37,47 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
-#include <math.h>
-#include <stdbool.h>
+//#include <math.h>
 
 int checks;
 
+// linear search
+
+int linear_search(int *array, unsigned int array_size, int key)
+{
+	unsigned int top = array_size;
+
+	while (top > 0)
+	{
+		++checks;
+
+		if (key == array[--top])
+		{
+			return top;
+		}
+	}
+
+	return -1;
+}
 
 // the standard binary search from text books
 
-int standard_binary_search(int *array, int array_size, int key)
+int standard_binary_search(int *array, unsigned int array_size, int key)
 {
-	int bot, mid, i;
+	int bot, mid, top;
 
 	bot = 0;
-	i = array_size - 1;
+	top = array_size - 1;
 
-	while (bot < i)
+	while (bot < top)
 	{
-		mid = i - (i - bot) / 2;
+		mid = top - (top - bot) / 2;
 
 		++checks;
 
 		if (key < array[mid])
 		{
-			i = mid - 1;
+			top = mid - 1;
 		}
 		else
 		{
@@ -63,52 +87,90 @@ int standard_binary_search(int *array, int array_size, int key)
 
 	++checks;
 
-	if (key == array[i])
+	if (key == array[top])
 	{
-		return i;
+		return top;
 	}
 	return -1;
 }
 
 // faster than the standard binary search, same number of checks
 
-int boundless_binary_search(int *array, int array_size, int key)
+int boundless_binary_search(int *array, unsigned int array_size, int key)
 {
-	unsigned int mid, i;
+	unsigned int mid, bot;
 
-	i = 0;
+	if (array_size == 0)
+	{
+		return -1;
+	}
+	bot = 0;
 	mid = array_size;
 
 	while (mid > 1)
 	{
 		++checks;
 
-		if (key >= array[i + mid / 2])
+		if (key >= array[bot + mid / 2])
 		{
-			i += mid++ / 2;
+			bot += mid++ / 2;
 		}
 		mid /= 2;
 	}
 
 	++checks;
 
-	if (key == array[i])
+	if (key == array[bot])
 	{
-		return i;
+		return bot;
 	}
+
+	return -1;
+}
+
+// always double tap ⁍⁍
+
+int doubletapped_binary_search(int *array, unsigned int array_size, int key)
+{
+	unsigned int mid, bot;
+
+	bot = 0;
+	mid = array_size;
+
+	while (mid > 2)
+	{
+		++checks;
+
+		if (key >= array[bot + mid / 2])
+		{
+			bot += mid++ / 2;
+		}
+		mid /= 2;
+	}
+
+	while (mid--)
+	{
+		++checks;
+
+		if (key == array[bot + mid])
+		{
+			return bot + mid;
+		}
+	}
+
 	return -1;
 }
 
 // faster than the boundless binary search, more checks
 
-int monobound_binary_search(int *array, int array_size, int key)
+int monobound_binary_search(int *array, unsigned int array_size, int key)
 {
 	unsigned int bot, mid, top;
 
 	bot = 0;
 	top = array_size;
 
-	while (top > 1)
+	while (top > 2)
 	{
 		mid = top / 2;
 
@@ -121,18 +183,55 @@ int monobound_binary_search(int *array, int array_size, int key)
 		top -= mid;
 	}
 
-	++checks;
-
-	if (key == array[bot])
+	while (top--)
 	{
-		return bot;
+		++checks;
+
+		if (key == array[bot + top])
+		{
+			return bot + top;
+		}
+	}
+	return -1;
+}
+
+// heck, always triple tap ⁍⁍⁍
+
+int tripletapped_binary_search(int *array, unsigned int array_size, int key)
+{
+	unsigned int bot, mid, top;
+
+	bot = 0;
+	top = array_size;
+
+	while (top > 3)
+	{
+		mid = top / 2;
+
+		++checks;
+
+		if (key >= array[bot + mid])
+		{
+			bot += mid;
+		}
+		top -= mid;
+	}
+
+	while (top--)
+	{
+		++checks;
+
+		if (key == array[bot + top])
+		{
+			return bot + top;
+		}
 	}
 	return -1;
 }
 
 // better performance on large arrays
 
-int monobound_quaternary_search(int *array, int array_size, int key)
+int monobound_quaternary_search(int *array, unsigned int array_size, int key)
 {
 	unsigned int bot, mid, top;
 
@@ -166,7 +265,7 @@ int monobound_quaternary_search(int *array, int array_size, int key)
 		bot += mid;
 	}
 
-	while (top > 1)
+	while (top > 3)
 	{
 		mid = top / 2;
 
@@ -179,58 +278,70 @@ int monobound_quaternary_search(int *array, int array_size, int key)
 		top -= mid;
 	}
 
-	++checks;
-
-	if (key == array[bot])
+	while (top--)
 	{
-		return bot;
+		++checks;
+
+		if (key == array[bot + top])
+		{
+			return bot + top;
+		}
 	}
 	return -1;
 }
 
 // requires an even distribution
 
-int monobound_interpolated_search(int *array, int array_size, int key)
+int monobound_interpolated_search(int *array, unsigned int array_size, int key)
 {
-	unsigned int top, mid, i;
+	unsigned int bot, mid, top;
 	int min, max;
 
-	++checks;
-
-	if (key <= array[0] || array_size <= 1)
+	if (array_size == 0)
 	{
-		return ++checks && array[0] == key ? 0 : -1;
+		return -1;
 	}
 
-	i = array_size - 1;
+	++checks;
+
+	if (key < array[0])
+	{
+		return -1;
+	}
+
+	bot = array_size - 1;
+
+	++checks;
+
+	if (key >= array[bot])
+	{
+		return ++checks && array[bot] == key ? bot : -1;
+	}
 
 	min = array[0];
-	max = array[i];
+	max = array[bot];
 
-	if (max != min)
-	{
-		i *= (float) (key - min) / (max - min);
-	}
+	bot *= (float) (key - min) / (max - min);
 
 	++checks;
 
-	if (key >= array[i])
+	if (key >= array[bot])
 	{
-		mid = 64;
+		mid = 32;
 
 		while (1)
 		{
-			if (i + mid >= array_size)
+			if (bot + mid >= array_size)
 			{
-				mid = array_size - i;
+				mid = array_size - bot;
 				break;
 			}
 
 			++checks;
 
-			if (key >= array[i + mid])
+			if (key >= array[bot + mid])
 			{
-				i += mid;
+				bot += mid;
 			}
 			else
 			{
@@ -241,36 +352,110 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 
 		top = mid;
 
-		while (top > 1)
+		while (top > 3)
 		{
 			mid = top / 2;
 
 			++checks;
 
-			if (key >= array[i + mid])
+			if (key >= array[bot + mid])
 			{
-				i += mid;
+				bot += mid;
 			}
 			top -= mid;
 		}
 	}
 	else
 	{
-		mid = 64;
+		mid = 32;
 
 		while (1)
 		{
-			if (i < mid)
+			if (bot < mid)
 			{
-				mid = i;
+				top = bot;
+				bot = 0;
+
 				break;
 			}
 
 			++checks;
 
-			if (key <= array[i - mid])
+			if (key < array[bot - mid])
 			{
-				i -= mid;
+				bot -= mid;
+			}
+			else
+			{
+				bot -= mid;
+				top = mid;
+				break;
+			}
+			mid *= 2;
+		}
+
+		while (top > 3)
+		{
+			mid = top / 2;
+
+			++checks;
+
+			if (key >= array[bot + mid])
+			{
+				bot += mid;
+			}
+			top -= mid;
+		}
+	}
+
+	while (top--)
+	{
+		++checks;
+
+		if (key == array[bot + top])
+		{
+			return bot + top;
+		}
+	}
+
+	return -1;
+}
+
+// requires in order sequential access to shine
+
+int adaptive_binary_search(int *array, unsigned int array_size, int key)
+{
+	static unsigned int i, balance = 64;
+	unsigned int bot, top, mid;
+
+	if (balance >= 32)
+	{
+		bot = 0;
+		top = array_size;
+
+		goto monobound;
+	}
+	bot = i;
+
+	++checks;
+
+	if (key >= array[bot])
+	{
+		mid = 32;
+
+		while (1)
+		{
+			if (bot + mid >= array_size)
+			{
+				mid = array_size - bot;
+				break;
+			}
+
+			++checks;
+
+			if (key >= array[bot + mid])
+			{
+				bot += mid;
 			}
 			else
 			{
@@ -281,25 +466,76 @@ int monobound_interpolated_search(int *array, int array_size, int key)
 
 		top = mid;
 
-		while (top > 1)
+		while (top > 3)
 		{
 			mid = top / 2;
 
 			++checks;
 
-			if (key <= array[i - mid])
+			if (key >= array[bot + mid])
 			{
-				i -= mid;
+				bot += mid;
+			}
+			top -= mid;
+		}
+	}
+	else
+	{
+		mid = 32;
+
+		while (1)
+		{
+			if (bot < mid)
+			{
+				top = bot;
+				bot = 0;
+
+				break;
+			}
+
+			++checks;
+
+			if (key < array[bot - mid])
+			{
+				bot -= mid;
+			}
+			else
+			{
+				bot -= mid;
+				top = mid;
+				break;
+			}
+			mid *= 2;
+		}
+
+		monobound:
+
+		while (top > 3)
+		{
+			mid = top / 2;
+
+			++checks;
+
+			if (key >= array[bot + mid])
+			{
+				bot += mid;
 			}
 			top -= mid;
 		}
 	}
 
-	++checks;
+	balance = i > bot ? i - bot : bot - i;
 
-	if (key == array[i])
+	i = bot;
+
+	while (top--)
 	{
-		return i;
+		++checks;
+
+		if (key == array[bot + top])
+		{
+			return bot + top;
+		}
 	}
 	return -1;
 }
@@ -316,13 +552,12 @@ long long utime()
 }
 
 int *array;
-int density, max, loop, top, rnd, runs;
+int density, max, loop, top, rnd, runs, sequential;
 long long start, end, best;
-int *array;
 
-void execute(int (*algo_func)(int *, int, int), const char * algo_name)
+void execute(int (*algo_func)(int *, unsigned int, int), const char * algo_name)
 {
-	int hit = 0, miss = 0;
+	int hit = 0, miss = 0, plus = 0;
 
 	srand(rnd);
 
@@ -333,15 +568,34 @@ void execute(int (*algo_func)(int *, int, int), const char * algo_name)
 	{
 		start = utime();
 
-		for (int cnt = loop ; cnt ; --cnt)
+		if (sequential)
 		{
-			if (algo_func(array, max, rand() % top) >= 0)
+			for (int cnt = loop ; cnt ; --cnt)
 			{
-				hit++;
-			}	
-			else
+				plus += 10 * (rand() % density) + 10;
+
+				if (algo_func(array, max, plus % top) >= 0)
+				{
+					hit++;
+				}
+				else
+				{
+					miss++;
+				}
+			}
+		}
+		else
+		{
+			for (int cnt = loop ; cnt ; --cnt)
 			{
-				miss++;
+				if (algo_func(array, max, rand() % top) >= 0)
+				{
+					hit++;
+				}	
+				else
+				{
+					miss++;
+				}
 			}
 		}
 
@@ -362,6 +616,7 @@ int main(int argc, char **argv)
 {
 	int cnt, val;
 
+	sequential = 0;
 	max = 100000;
 	loop = 10000;
 	density = 10; // max * density should stay under 2 billion
@@ -379,15 +634,15 @@ int main(int argc, char **argv)
 	if (argc > 4)
 		density = atoi(argv[3]);
 
-	array = malloc(max * sizeof(int));
+	array = (int *) malloc(max * sizeof(int));
 
 	if ((long long) max * (long long) density > 2000000000)
 	{
 		density = 2;
 	}
 
-//	srand(time(NULL));
-	srand(1);
+	srand(time(NULL));
+//	srand(1);
 
 	rnd = rand();
 
@@ -398,40 +653,60 @@ int main(int argc, char **argv)
 
 	top = array[max - 1] + 2;
 
-	printf("\n\nEven distribution with %d 32 bit integers\n\n", max);
+	printf("\n\nEven distribution with %d 32 bit integers, random access\n\n", max);
 
 	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
 	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
 
+	if (max < 100)
+	{
+		run(linear_search);
+	}
 	run(standard_binary_search);
 	run(boundless_binary_search);
+	run(doubletapped_binary_search);
 	run(monobound_binary_search);
+	run(tripletapped_binary_search);
+
 	run(monobound_quaternary_search);
 	run(monobound_interpolated_search);
-
-	return 0;
+	run(adaptive_binary_search);
 
 	// uneven distribution
 
-	for (cnt = 0, val = 0 ; cnt < max / 8 ; cnt++)
+	for (cnt = 0, val = 0 ; cnt < max / 2 ; cnt++)
 	{
 		array[cnt] = val++;
 	}
 
 	for ( ; cnt < max ; cnt++)
 	{
-		array[cnt] = (val += rand() % density + 1);
+		array[cnt] = (val += rand() % (2 * density) + 1);
 	}
 
 	top = array[max - 1] + 2;
 
-	printf("\n\nUneven distribution with %d 32 bit integers\n\n", max);
+	printf("\n\nUneven distribution with %d 32 bit integers, random access\n\n", max);
 
 	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
 	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
 
-	run(standard_binary_search);
+	run(monobound_binary_search);
 	run(monobound_interpolated_search);
+	run(adaptive_binary_search);
+
+	// sequential access
+
+	sequential = 1;
+
+	printf("\n\nUneven distribution with %d 32 bit integers, sequential access\n\n", max);
+
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
+
+	run(monobound_binary_search);
+	run(monobound_interpolated_search);
+	run(adaptive_binary_search);
 
 	return 0;
 }
