@@ -69,30 +69,63 @@ Adaptive Binary Search
 The adaptive binary search is optimized for repeated binary searches on the same array. When it observes a pattern it switches from a binary search to an exponential search. Unlike the interpolated search the adaptive search works on uneven distributions as well.
 
 A practical application for an adaptive binary search would be accessing a unicode lookup table.
-Benchmark graph
----------------
+
+Small array benchmark graph
+---------------------------
+The graph below shows the execution speed on arrays with 1, 2, 4, 8, 16, 32, 64, and 128 elements on an Intel i3 quad-core processor. The Y axis lists the execution time in microseconds.
+
+![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search_small.png)
+
+Small array benchmark tables
+----------------------------
+The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`
+
+|                       Name | Items |    Hits |  Misses |    Checks |     Time |
+|                 ---------- | ----- | ------- | ------- |  -------- | -------- |
+|              linear_search |     1 | 2500887 | 7499113 |  10000000 | 0.000112 |
+|     standard_binary_search |     1 | 2500887 | 7499113 |  10000000 | 0.000112 |
+| tripletapped_binary_search |     1 | 2500887 | 7499113 |  10000000 | 0.000112 |
+|                            |       |         |         |           |          |
+|              linear_search |     2 | 1998696 | 8001304 |  19000199 | 0.000117 |
+|     standard_binary_search |     2 | 1998696 | 8001304 |  20000000 | 0.000128 |
+| tripletapped_binary_search |     2 | 1998696 | 8001304 |  19000199 | 0.000117 |
+|                            |       |         |         |           |          |
+|              linear_search |     4 | 1427508 | 8572492 |  37860377 | 0.000133 |
+|     standard_binary_search |     4 | 1427508 | 8572492 |  30000000 | 0.000215 |
+| tripletapped_binary_search |     4 | 1427508 | 8572492 |  29287819 | 0.000133 |
+|                            |       |         |         |           |          |
+|              linear_search |     8 | 1229590 | 8770410 |  75696669 | 0.000153 |
+|     standard_binary_search |     8 | 1229590 | 8770410 |  40000000 | 0.000299 |
+| tripletapped_binary_search |     8 | 1229590 | 8770410 |  39385331 | 0.000140 |
+|                            |       |         |         |           |          |
+|              linear_search |    16 | 1509178 | 8490822 | 148675961 | 0.000200 |
+|     standard_binary_search |    16 | 1509178 | 8490822 |  50000000 | 0.000350 |
+| tripletapped_binary_search |    16 | 1509178 | 8490822 |  49244929 | 0.000154 |
+|                            |       |         |         |           |          |
+|              linear_search |    32 | 1748739 | 8251261 | 292889426 | 0.000287 |
+|     standard_binary_search |    32 | 1748739 | 8251261 |  60000000 | 0.000398 |
+| tripletapped_binary_search |    32 | 1748739 | 8251261 |  59125996 | 0.000167 |
+|                            |       |         |         |           |          |
+|              linear_search |    64 | 1854727 | 8145273 | 581578784 | 0.000441 |
+|     standard_binary_search |    64 | 1854727 | 8145273 |  70000000 | 0.000459 |
+| tripletapped_binary_search |    64 | 1854727 | 8145273 |  69072622 | 0.000184 |
+|                            |       |         |         |           |          |
+|              linear_search |   128 | 1946922 | 8053078 |1156325591 | 0.000807 |
+|     standard_binary_search |   128 | 1946922 | 8053078 |  80000000 | 0.000525 |
+| tripletapped_binary_search |   128 | 1946922 | 8053078 |  79026121 | 0.000201 |
+
+
+Large array benchmark graph
+---------------------------
 The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 100000, and 1000000 elements on an Intel i3 quad-core processor. The Y axis lists the execution time in microseconds.
 
 ![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search.png)
 
-Benchmark tables
-----------------
+Large array benchmark tables
+----------------------------
 The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`
 
 Even distribution with 5 32 bit integers, random access
-
-|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
-|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|                  linear_search |          5 |    1161540 |    8838460 |   47679224 |   0.000137 |
-|         standard_binary_search |          5 |    1161540 |    8838460 |   32557557 |   0.000252 |
-|        boundless_binary_search |          5 |    1161540 |    8838460 |   32557557 |   0.000252 |
-|     doubletapped_binary_search |          5 |    1161540 |    8838460 |   32092916 |   0.000216 |
-|        monobound_binary_search |          5 |    1161540 |    8838460 |   39768053 |   0.000136 |
-|     tripletapped_binary_search |          5 |    1161540 |    8838460 |   39071440 |   0.000133 |
-|    monobound_quaternary_search |          5 |    1161540 |    8838460 |   39071440 |   0.000138 |
-|  monobound_interpolated_search |          5 |    1161540 |    8838460 |   54185528 |   0.000312 |
-|         adaptive_binary_search |          5 |    1161540 |    8838460 |   39944191 |   0.000198 |
-
 
 Even distribution with 10 32 bit integers
 
@@ -108,19 +141,6 @@ Even distribution with 10 32 bit integers
 |  monobound_interpolated_search |         10 |    1786187 |    8213813 |   62133042 |   0.000345 |
 |         adaptive_binary_search |         10 |    1786187 |    8213813 |   48623654 |   0.000235 |
 
-Even distribution with 50 32 bit integers, random access
-
-|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
-|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|                  linear_search |         50 |    1880344 |    8119656 |  453932321 |   0.000367 |
-|         standard_binary_search |         50 |    1880344 |    8119656 |   67221668 |   0.000425 |
-|        boundless_binary_search |         50 |    1880344 |    8119656 |   67221668 |   0.000405 |
-|     doubletapped_binary_search |         50 |    1880344 |    8119656 |   66544327 |   0.000389 |
-|        monobound_binary_search |         50 |    1880344 |    8119656 |   69322150 |   0.000179 |
-|     tripletapped_binary_search |         50 |    1880344 |    8119656 |   69322150 |   0.000190 |
-|    monobound_quaternary_search |         50 |    1880344 |    8119656 |   69322150 |   0.000187 |
-|  monobound_interpolated_search |         50 |    1880344 |    8119656 |   88427136 |   0.000390 |
-|         adaptive_binary_search |         50 |    1880344 |    8119656 |   71211197 |   0.000272 |
 
 Even distribution with 100 32 bit integers, random access
 
