@@ -66,6 +66,11 @@ int standard_binary_search(int *array, unsigned int array_size, int key)
 {
 	int bot, mid, top;
 
+	if (array_size == 0)
+	{
+		return -1;
+	}
+
 	bot = 0;
 	top = array_size - 1;
 
@@ -323,89 +328,65 @@ int monobound_interpolated_search(int *array, unsigned int array_size, int key)
 
 	bot *= (float) (key - min) / (max - min);
 
+	top = 64;
+
 	++checks;
 
 	if (key >= array[bot])
 	{
-		mid = 32;
-
 		while (1)
 		{
-			if (bot + mid >= array_size)
+			if (bot + top >= array_size)
 			{
-				mid = array_size - bot;
+				top = array_size - bot;
 				break;
 			}
+			bot += top;
 
 			++checks;
 
-			if (key >= array[bot + mid])
+			if (key < array[bot])
 			{
-				bot += mid;
-			}
-			else
-			{
+				bot -= top;
 				break;
 			}
-			mid *= 2;
-		}
-
-		top = mid;
-
-		while (top > 3)
-		{
-			mid = top / 2;
-
-			++checks;
-
-			if (key >= array[bot + mid])
-			{
-				bot += mid;
-			}
-			top -= mid;
+			top *= 2;
 		}
 	}
 	else
 	{
-		mid = 32;
-
 		while (1)
 		{
-			if (bot < mid)
+			if (bot < top)
 			{
 				top = bot;
 				bot = 0;
 
 				break;
 			}
+			bot -= top;
 
 			++checks;
 
-			if (key < array[bot - mid])
+			if (key >= array[bot])
 			{
-				bot -= mid;
-			}
-			else
-			{
-				bot -= mid;
-				top = mid;
 				break;
 			}
-			mid *= 2;
+			top *= 2;
 		}
+	}
 
-		while (top > 3)
+	while (top > 3)
+	{
+		mid = top / 2;
+
+		++checks;
+
+		if (key >= array[bot + mid])
 		{
-			mid = top / 2;
-
-			++checks;
-
-			if (key >= array[bot + mid])
-			{
-				bot += mid;
-			}
-			top -= mid;
+			bot += mid;
 		}
+		top -= mid;
 	}
 
 	while (top--)
@@ -421,14 +402,19 @@ int monobound_interpolated_search(int *array, unsigned int array_size, int key)
 	return -1;
 }
 
-// requires in order sequential access to shine
+// requires in order sequential access
 
 int adaptive_binary_search(int *array, unsigned int array_size, int key)
 {
-	static unsigned int i, balance = 64;
+	static unsigned int i, balance;
 	unsigned int bot, top, mid;
 
-	if (balance >= 32)
+/*	if (array_size == 0)
+	{
+		return -1;
+	}
+*/
+	if (balance >= 32 || array_size <= 64)
 	{
 		bot = 0;
 		top = array_size;
@@ -436,103 +422,77 @@ int adaptive_binary_search(int *array, unsigned int array_size, int key)
 		goto monobound;
 	}
 	bot = i;
+	top = 32;
 
 	++checks;
 
 	if (key >= array[bot])
 	{
-		mid = 32;
-
 		while (1)
 		{
-			if (bot + mid >= array_size)
+			if (bot + top >= array_size)
 			{
-				mid = array_size - bot;
+				top = array_size - bot;
 				break;
 			}
+			bot += top;
 
 			++checks;
 
-			if (key >= array[bot + mid])
+			if (key < array[bot])
 			{
-				bot += mid;
-			}
-			else
-			{
+				bot -= top;
 				break;
 			}
-			mid *= 2;
-		}
-
-		top = mid;
-
-		while (top > 3)
-		{
-			mid = top / 2;
-
-			++checks;
-
-			if (key >= array[bot + mid])
-			{
-				bot += mid;
-			}
-			top -= mid;
+			top *= 2;
 		}
 	}
 	else
 	{
-		mid = 32;
-
 		while (1)
 		{
-			if (bot < mid)
+			if (bot < top)
 			{
 				top = bot;
 				bot = 0;
 
 				break;
 			}
+			bot -= top;
 
 			++checks;
 
-			if (key < array[bot - mid])
+			if (key >= array[bot])
 			{
-				bot -= mid;
-			}
-			else
-			{
-				bot -= mid;
-				top = mid;
 				break;
 			}
-			mid *= 2;
-		}
-
-		monobound:
-
-		while (top > 3)
-		{
-			mid = top / 2;
-
-			++checks;
-
-			if (key >= array[bot + mid])
-			{
-				bot += mid;
-			}
-			top -= mid;
+			top *= 2;
 		}
 	}
 
+	monobound:
+
+	while (top > 3)
+	{
+		mid = top / 2;
+
+		++checks;
+
+		if (key >= array[bot + mid])
+		{
+			bot += mid;
+		}
+		top -= mid;
+	}
 	balance = i > bot ? i - bot : bot - i;
 
 	i = bot;
 
-	while (top--)
+	while (top)
 	{
 		++checks;
 
-		if (key == array[bot + top])
+		if (key == array[bot + --top])
 		{
 			return bot + top;
 		}
