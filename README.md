@@ -72,7 +72,7 @@ A practical application for an adaptive binary search would be accessing a unico
 
 Small array benchmark graph
 ---------------------------
-The graph below shows the execution speed on arrays with 1, 2, 4, 8, 16, 32, 64, and 128 elements on an Intel i3 quad-core processor. The Y axis lists the execution time in microseconds.
+The graph below shows the execution speed on arrays with 1, 2, 4, 8, 16, 32, 64, and 128 elements on an Intel i3 quad-core processor.
 
 ![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search_small.png)
 
@@ -125,7 +125,7 @@ The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.0
 
 Large array benchmark graph
 ---------------------------
-The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 100000, and 1000000 elements on an Intel i3 quad-core processor. The Y axis lists the execution time in microseconds.
+The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 100000, and 1000000 elements on an Intel i3 quad-core processor.
 
 ![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search.png)
 
