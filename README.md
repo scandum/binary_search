@@ -80,39 +80,47 @@ Small array benchmark tables
 ----------------------------
 The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`
 
-|                       Name | Items |    Hits |  Misses |    Checks |     Time |
-|                 ---------- | ----- | ------- | ------- |  -------- | -------- |
-|              linear_search |     1 | 2500887 | 7499113 |  10000000 | 0.000112 |
-|     standard_binary_search |     1 | 2500887 | 7499113 |  10000000 | 0.000112 |
-| tripletapped_binary_search |     1 | 2500887 | 7499113 |  10000000 | 0.000112 |
-|                            |       |         |         |           |          |
-|              linear_search |     2 | 1998696 | 8001304 |  19000199 | 0.000117 |
-|     standard_binary_search |     2 | 1998696 | 8001304 |  20000000 | 0.000128 |
-| tripletapped_binary_search |     2 | 1998696 | 8001304 |  19000199 | 0.000117 |
-|                            |       |         |         |           |          |
-|              linear_search |     4 | 1427508 | 8572492 |  37860377 | 0.000133 |
-|     standard_binary_search |     4 | 1427508 | 8572492 |  30000000 | 0.000215 |
-| tripletapped_binary_search |     4 | 1427508 | 8572492 |  29287819 | 0.000133 |
-|                            |       |         |         |           |          |
-|              linear_search |     8 | 1229590 | 8770410 |  75696669 | 0.000153 |
-|     standard_binary_search |     8 | 1229590 | 8770410 |  40000000 | 0.000299 |
-| tripletapped_binary_search |     8 | 1229590 | 8770410 |  39385331 | 0.000140 |
-|                            |       |         |         |           |          |
-|              linear_search |    16 | 1509178 | 8490822 | 148675961 | 0.000200 |
-|     standard_binary_search |    16 | 1509178 | 8490822 |  50000000 | 0.000350 |
-| tripletapped_binary_search |    16 | 1509178 | 8490822 |  49244929 | 0.000154 |
-|                            |       |         |         |           |          |
-|              linear_search |    32 | 1748739 | 8251261 | 292889426 | 0.000287 |
-|     standard_binary_search |    32 | 1748739 | 8251261 |  60000000 | 0.000398 |
-| tripletapped_binary_search |    32 | 1748739 | 8251261 |  59125996 | 0.000167 |
-|                            |       |         |         |           |          |
-|              linear_search |    64 | 1854727 | 8145273 | 581578784 | 0.000441 |
-|     standard_binary_search |    64 | 1854727 | 8145273 |  70000000 | 0.000459 |
-| tripletapped_binary_search |    64 | 1854727 | 8145273 |  69072622 | 0.000184 |
-|                            |       |         |         |           |          |
-|              linear_search |   128 | 1946922 | 8053078 |1156325591 | 0.000807 |
-|     standard_binary_search |   128 | 1946922 | 8053078 |  80000000 | 0.000525 |
-| tripletapped_binary_search |   128 | 1946922 | 8053078 |  79026121 | 0.000201 |
+|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
+|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|                  linear_search |          1 |        810 |       9190 |      10000 |   0.000110 |
+|         standard_binary_search |          1 |        810 |       9190 |      10000 |   0.000110 |
+|        monobound_binary_search |          1 |        810 |       9190 |      10000 |   0.000110 |
+|     tripletapped_binary_search |          1 |        810 |       9190 |      10000 |   0.000118 |
+|                                |            |            |            |            |            |
+|                  linear_search |          2 |       1078 |       8922 |      19461 |   0.000121 |
+|         standard_binary_search |          2 |       1078 |       8922 |      20000 |   0.000188 |
+|        monobound_binary_search |          2 |       1078 |       8922 |      20000 |   0.000117 |
+|     tripletapped_binary_search |          2 |       1078 |       8922 |      19461 |   0.000124 |
+|                                |            |            |            |            |            |
+|                  linear_search |          4 |        796 |       9204 |      38761 |   0.000127 |
+|         standard_binary_search |          4 |        796 |       9204 |      30000 |   0.000241 |
+|        monobound_binary_search |          4 |        796 |       9204 |      30000 |   0.000120 |
+|     tripletapped_binary_search |          4 |        796 |       9204 |      29609 |   0.000122 |
+|                                |            |            |            |            |            |
+|                  linear_search |          8 |        791 |       9209 |      77182 |   0.000146 |
+|         standard_binary_search |          8 |        791 |       9209 |      40000 |   0.000299 |
+|        monobound_binary_search |          8 |        791 |       9209 |      40000 |   0.000129 |
+|     tripletapped_binary_search |          8 |        791 |       9209 |      39592 |   0.000131 |
+|                                |            |            |            |            |            |
+|                  linear_search |         16 |       1049 |       8951 |     152282 |   0.000194 |
+|         standard_binary_search |         16 |       1049 |       8951 |      50000 |   0.000339 |
+|        monobound_binary_search |         16 |       1049 |       8951 |      50000 |   0.000142 |
+|     tripletapped_binary_search |         16 |       1049 |       8951 |      49466 |   0.000142 |
+|                                |            |            |            |            |            |
+|                  linear_search |         32 |       1094 |       8906 |     302680 |   0.000280 |
+|         standard_binary_search |         32 |       1094 |       8906 |      60000 |   0.000391 |
+|        monobound_binary_search |         32 |       1094 |       8906 |      60000 |   0.000154 |
+|     tripletapped_binary_search |         32 |       1094 |       8906 |      59470 |   0.000151 |
+|                                |            |            |            |            |            |
+|                  linear_search |         64 |       1120 |       8880 |     603901 |   0.000445 |
+|         standard_binary_search |         64 |       1120 |       8880 |      70000 |   0.000442 |
+|        monobound_binary_search |         64 |       1120 |       8880 |      70000 |   0.000169 |
+|     tripletapped_binary_search |         64 |       1120 |       8880 |      69419 |   0.000166 |
+|                                |            |            |            |            |            |
+|                  linear_search |        128 |       1047 |       8953 |    1214931 |   0.000837 |
+|         standard_binary_search |        128 |       1047 |       8953 |      80000 |   0.000501 |
+|        monobound_binary_search |        128 |       1047 |       8953 |      80000 |   0.000184 |
+|     tripletapped_binary_search |        128 |       1047 |       8953 |      79495 |   0.000180 |
 
 
 Large array benchmark graph
@@ -125,88 +133,87 @@ Large array benchmark tables
 ----------------------------
 The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`
 
-Even distribution with 5 32 bit integers, random access
-
-Even distribution with 10 32 bit integers
+Even distribution with 10 32 bit integers, random access
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|                  linear_search |         10 |    1786187 |    8213813 |   91965978 |   0.000165 |
-|         standard_binary_search |         10 |    1786187 |    8213813 |   43034358 |   0.000295 |
-|        boundless_binary_search |         10 |    1786187 |    8213813 |   43034358 |   0.000284 |
-|     doubletapped_binary_search |         10 |    1786187 |    8213813 |   42319929 |   0.000249 |
-|        monobound_binary_search |         10 |    1786187 |    8213813 |   49643139 |   0.000155 |
-|     tripletapped_binary_search |         10 |    1786187 |    8213813 |   48571287 |   0.000154 |
-|    monobound_quaternary_search |         10 |    1786187 |    8213813 |   48571287 |   0.000156 |
-|  monobound_interpolated_search |         10 |    1786187 |    8213813 |   62133042 |   0.000345 |
-|         adaptive_binary_search |         10 |    1786187 |    8213813 |   48623654 |   0.000235 |
+|         standard_binary_search |         10 |        925 |       9075 |      43639 |   0.000295 |
+|        boundless_binary_search |         10 |        925 |       9075 |      43639 |   0.000278 |
+|     doubletapped_binary_search |         10 |        925 |       9075 |      43253 |   0.000258 |
+|        monobound_binary_search |         10 |        925 |       9075 |      50000 |   0.000133 |
+|     tripletapped_binary_search |         10 |        925 |       9075 |      49238 |   0.000127 |
+|    monobound_quaternary_search |         10 |        925 |       9075 |      49238 |   0.000126 |
+|  monobound_interpolated_search |         10 |        925 |       9075 |      63788 |   0.000331 |
+|         adaptive_binary_search |         10 |        925 |       9075 |      49238 |   0.000134 |
 
 
 Even distribution with 100 32 bit integers, random access
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |        100 |    1680382 |    8319618 |   76588952 |   0.000490 |
-|        boundless_binary_search |        100 |    1680382 |    8319618 |   76588952 |   0.000455 |
-|     doubletapped_binary_search |        100 |    1680382 |    8319618 |   75984640 |   0.000440 |
-|        monobound_binary_search |        100 |    1680382 |    8319618 |   79394504 |   0.000195 |
-|     tripletapped_binary_search |        100 |    1680382 |    8319618 |   79394504 |   0.000202 |
-|    monobound_quaternary_search |        100 |    1680382 |    8319618 |   79394504 |   0.000204 |
-|  monobound_interpolated_search |        100 |    1680382 |    8319618 |   89050594 |   0.000339 |
-|         adaptive_binary_search |        100 |    1680382 |    8319618 |   80108500 |   0.000274 |
+|         standard_binary_search |        100 |       1052 |       8948 |      77057 |   0.000468 |
+|        boundless_binary_search |        100 |       1052 |       8948 |      77057 |   0.000427 |
+|     doubletapped_binary_search |        100 |       1052 |       8948 |      76662 |   0.000430 |
+|        monobound_binary_search |        100 |       1052 |       8948 |      80000 |   0.000184 |
+|     tripletapped_binary_search |        100 |       1052 |       8948 |      79642 |   0.000180 |
+|    monobound_quaternary_search |        100 |       1052 |       8948 |      79642 |   0.000181 |
+|  monobound_interpolated_search |        100 |       1052 |       8948 |      92397 |   0.000361 |
+|         adaptive_binary_search |        100 |       1052 |       8948 |      80457 |   0.000258 |
+
 
 
 Even distribution with 1000 32 bit integers, random access
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |       1000 |    1811925 |    8188075 |  109725397 |   0.000727 |
-|        boundless_binary_search |       1000 |    1811925 |    8188075 |  109725397 |   0.000642 |
-|     doubletapped_binary_search |       1000 |    1811925 |    8188075 |  108841311 |   0.000600 |
-|        monobound_binary_search |       1000 |    1811925 |    8188075 |  109117050 |   0.000242 |
-|     tripletapped_binary_search |       1000 |    1811925 |    8188075 |  109117050 |   0.000249 |
-|    monobound_quaternary_search |       1000 |    1811925 |    8188075 |  111652524 |   0.000285 |
-|  monobound_interpolated_search |       1000 |    1811925 |    8188075 |   98119976 |   0.000315 |
-|         adaptive_binary_search |       1000 |    1811925 |    8188075 |  110222769 |   0.000262 |
+|         standard_binary_search |       1000 |        978 |       9022 |     109805 |   0.000692 |
+|        boundless_binary_search |       1000 |        978 |       9022 |     109805 |   0.000616 |
+|     doubletapped_binary_search |       1000 |        978 |       9022 |     109358 |   0.000597 |
+|        monobound_binary_search |       1000 |        978 |       9022 |     110000 |   0.000235 |
+|     tripletapped_binary_search |       1000 |        978 |       9022 |     109495 |   0.000233 |
+|    monobound_quaternary_search |       1000 |        978 |       9022 |     109495 |   0.000266 |
+|  monobound_interpolated_search |       1000 |        978 |       9022 |     108484 |   0.000249 |
+|         adaptive_binary_search |       1000 |        978 |       9022 |     110536 |   0.000248 |
 
 
 Even distribution with 10000 32 bit integers, random access
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |      10000 |    1820690 |    8179310 |  143647368 |   0.000933 |
-|        boundless_binary_search |      10000 |    1820690 |    8179310 |  143647368 |   0.000826 |
-|     doubletapped_binary_search |      10000 |    1820690 |    8179310 |  142901468 |   0.000810 |
-|        monobound_binary_search |      10000 |    1820690 |    8179310 |  149671214 |   0.000314 |
-|     tripletapped_binary_search |      10000 |    1820690 |    8179310 |  148596025 |   0.000307 |
-|    monobound_quaternary_search |      10000 |    1820690 |    8179310 |  156159023 |   0.000404 |
-|  monobound_interpolated_search |      10000 |    1820690 |    8179310 |  101492488 |   0.000333 |
-|         adaptive_binary_search |      10000 |    1820690 |    8179310 |  148849100 |   0.000315 |
+|         standard_binary_search |      10000 |       1035 |       8965 |     143651 |   0.000915 |
+|        boundless_binary_search |      10000 |       1035 |       8965 |     143651 |   0.000781 |
+|     doubletapped_binary_search |      10000 |       1035 |       8965 |     143214 |   0.000813 |
+|        monobound_binary_search |      10000 |       1035 |       8965 |     150000 |   0.000304 |
+|     tripletapped_binary_search |      10000 |       1035 |       8965 |     149211 |   0.000286 |
+|    monobound_quaternary_search |      10000 |       1035 |       8965 |     149211 |   0.000377 |
+|  monobound_interpolated_search |      10000 |       1035 |       8965 |     109378 |   0.000310 |
+|         adaptive_binary_search |      10000 |       1035 |       8965 |     149449 |   0.000295 |
 
 
 Even distribution with 100000 32 bit integers, random access
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |     100000 |    1817839 |    8182161 |  176886639 |   0.001219 |
-|        boundless_binary_search |     100000 |    1817839 |    8182161 |  176886639 |   0.001079 |
-|     doubletapped_binary_search |     100000 |    1817839 |    8182161 |  176259941 |   0.001070 |
-|        monobound_binary_search |     100000 |    1817839 |    8182161 |  179374342 |   0.000480 |
-|     tripletapped_binary_search |     100000 |    1817839 |    8182161 |  179374342 |   0.000490 |
-|    monobound_quaternary_search |     100000 |    1817839 |    8182161 |  189342122 |   0.000544 |
-|  monobound_interpolated_search |     100000 |    1817839 |    8182161 |  111030910 |   0.000456 |
-|         adaptive_binary_search |     100000 |    1817839 |    8182161 |  179422298 |   0.000496 |
+|         standard_binary_search |     100000 |       1025 |       8975 |     176794 |   0.001200 |
+|        boundless_binary_search |     100000 |       1025 |       8975 |     176794 |   0.001032 |
+|     doubletapped_binary_search |     100000 |       1025 |       8975 |     176441 |   0.001085 |
+|        monobound_binary_search |     100000 |       1025 |       8975 |     180000 |   0.000466 |
+|     tripletapped_binary_search |     100000 |       1025 |       8975 |     179645 |   0.000463 |
+|    monobound_quaternary_search |     100000 |       1025 |       8975 |     179660 |   0.000556 |
+|  monobound_interpolated_search |     100000 |       1025 |       8975 |     123273 |   0.000405 |
+|         adaptive_binary_search |     100000 |       1025 |       8975 |     179691 |   0.000474 |
 
 
 Even distribution with 1000000 32 bit integers, random access
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |    1000000 |    1817431 |    8182569 |  209513380 |   0.001705 |
-|        boundless_binary_search |    1000000 |    1817431 |    8182569 |  209513380 |   0.001547 |
-|     doubletapped_binary_search |    1000000 |    1817431 |    8182569 |  208649927 |   0.001530 |
-|        monobound_binary_search |    1000000 |    1817431 |    8182569 |  209134315 |   0.000987 |
-|     tripletapped_binary_search |    1000000 |    1817431 |    8182569 |  209134315 |   0.001013 |
-|    monobound_quaternary_search |    1000000 |    1817431 |    8182569 |  224132221 |   0.000921 |
-|  monobound_interpolated_search |    1000000 |    1817431 |    8182569 |  137975345 |   0.000545 |
-|         adaptive_binary_search |    1000000 |    1817431 |    8182569 |  209141121 |   0.001037 |
+|         standard_binary_search |    1000000 |        977 |       9023 |     209529 |   0.001700 |
+|        boundless_binary_search |    1000000 |        977 |       9023 |     209529 |   0.001512 |
+|     doubletapped_binary_search |    1000000 |        977 |       9023 |     209086 |   0.001560 |
+|        monobound_binary_search |    1000000 |        977 |       9023 |     210000 |   0.000986 |
+|     tripletapped_binary_search |    1000000 |        977 |       9023 |     209526 |   0.000994 |
+|    monobound_quaternary_search |    1000000 |        977 |       9023 |     209513 |   0.000944 |
+|  monobound_interpolated_search |    1000000 |        977 |       9023 |     124781 |   0.000504 |
+|         adaptive_binary_search |    1000000 |        977 |       9023 |     209533 |   0.001024 |
+
