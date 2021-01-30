@@ -37,26 +37,53 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
-//#include <math.h>
 
-int checks;
+unsigned int checks;
 
-// linear search
+// linear search, needs to run backwards so it's stable
 
 int linear_search(int *array, unsigned int array_size, int key)
 {
 	unsigned int top = array_size;
 
-	while (top > 0)
+	while (top--)
 	{
 		++checks;
 
-		if (key == array[--top])
+		if (key == array[top])
 		{
 			return top;
 		}
 	}
+	return -1;
+}
 
+// faster than linear on larger arrays
+
+int breaking_linear_search(int *array, unsigned int array_size, int key)
+{
+	unsigned int top = array_size;
+
+	if (array_size == 0)
+	{
+		return -1;
+	}
+
+	while (--top)
+	{
+		++checks;
+
+		if (key >= array[top])
+		{
+			break;
+		}
+	}
+	++checks;
+
+	if (key == array[top])
+	{
+		return top;
+	}
 	return -1;
 }
 
@@ -175,7 +202,7 @@ int monobound_binary_search(int *array, unsigned int array_size, int key)
 	bot = 0;
 	top = array_size;
 
-	while (top > 2)
+	while (top > 1)
 	{
 		mid = top / 2;
 
@@ -188,7 +215,7 @@ int monobound_binary_search(int *array, unsigned int array_size, int key)
 		top -= mid;
 	}
 
-	while (top--)
+	if (top--)
 	{
 		++checks;
 
@@ -243,44 +270,44 @@ int monobound_quaternary_search(int *array, unsigned int array_size, int key)
 	bot = 0;
 	top = array_size;
 
-	while (top >= 512)
+	while (top >= 256)
 	{
 		mid = top / 4;
 		top -= mid * 3;
 
 		++checks;
-		if (key < array[bot + mid])
+		if (key < array[bot + mid * 2])
 		{
-			continue;
+			++checks;
+			if (key >= array[bot + mid])
+			{
+				bot += mid;
+			}
 		}
-		bot += mid;
+		else
+		{
+			bot += mid * 2;
 
-		++checks;
-		if (key < array[bot + mid])
-		{
-			continue;
+			++checks;
+			if (key >= array[bot + mid])
+			{
+				bot += mid;
+			}
 		}
-		bot += mid;
-
-		++checks;
-		if (key < array[bot + mid])
-		{
-			continue;
-		}
-		bot += mid;
 	}
 
 	while (top > 3)
 	{
 		mid = top / 2;
+		top -= mid;
 
 		++checks;
 
-		if (key >= array[bot + mid])
+		if (key < array[bot + mid])
 		{
-			bot += mid;
+			continue;
 		}
-		top -= mid;
+		bot += mid;
 	}
 
 	while (top--)
@@ -409,11 +436,6 @@ int adaptive_binary_search(int *array, unsigned int array_size, int key)
 	static unsigned int i, balance;
 	unsigned int bot, top, mid;
 
-/*	if (array_size == 0)
-	{
-		return -1;
-	}
-*/
 	if (balance >= 32 || array_size <= 64)
 	{
 		bot = 0;
@@ -511,30 +533,41 @@ long long utime()
 	return now_time.tv_sec * 1000000LL + now_time.tv_usec;
 }
 
-int *array;
+int *o_array;
 int density, max, loop, top, rnd, runs, sequential;
 long long start, end, best;
 
 void execute(int (*algo_func)(int *, unsigned int, int), const char * algo_name)
 {
-	int hit = 0, miss = 0, plus = 0;
+	long long stable, value;
+	unsigned int cnt, hit, miss, plus;
 
 	srand(rnd);
 
-	checks = 0;
 	best = 0;
 
 	for (int run = runs ; run ; --run)
 	{
-		start = utime();
+		checks = 0;
+		hit    = 0;
+		miss   = 0;
+		plus   = 0;
 
 		if (sequential)
 		{
-			for (int cnt = loop ; cnt ; --cnt)
-			{
-				plus += 10 * (rand() % density) + 10;
+			stable = 0;
 
-				if (algo_func(array, max, plus % top) >= 0)
+			start = utime();
+
+			for (cnt = loop ; cnt ; --cnt)
+			{
+				plus += rand() % (density * 10);
+
+				value = algo_func(o_array, max, plus % top);
+
+				stable += value;
+
+				if (value >= 0)
 				{
 					hit++;
 				}
@@ -543,12 +576,15 @@ void execute(int (*algo_func)(int *, unsigned int, int), const char * algo_name)
 					miss++;
 				}
 			}
+			end = utime();
 		}
 		else
 		{
-			for (int cnt = loop ; cnt ; --cnt)
+			start = utime();
+
+			for (cnt = loop ; cnt ; --cnt)
 			{
-				if (algo_func(array, max, rand() % top) >= 0)
+				if (algo_func(o_array, max, rand() % top) >= 0)
 				{
 					hit++;
 				}	
@@ -557,16 +593,24 @@ void execute(int (*algo_func)(int *, unsigned int, int), const char * algo_name)
 					miss++;
 				}
 			}
+			end = utime();
 		}
 
-		end = utime();
 
 		if (best == 0 || end - start < best)
 		{
 			best = end - start;
 		}
 	}
-	printf("| %30s | %10d | %10d | %10d | %10d | %10f |\n", algo_name, max, hit, miss, checks, best / 1000000.0);
+
+	if (sequential)
+	{
+		printf("| %30s | %10d | %10d | %10d | %10d | %10f | %10lld |\n", algo_name, max, hit, miss, checks, best / 1000000.0, stable);
+	}
+	else
+	{
+		printf("| %30s | %10d | %10d | %10d | %10d | %10f |\n", algo_name, max, hit, miss, checks, best / 1000000.0);
+	}
 
 }
 
@@ -582,52 +626,51 @@ int main(int argc, char **argv)
 	density = 10; // max * density should stay under 2 billion
 	runs = 1000;
 
+	rnd = time(NULL);
+
 	if (argc > 1)
 		max = atoi(argv[1]);
 
 	if (argc > 2)
-		loop = atoi(argv[2]);
+		runs = atoi(argv[2]);
 
 	if (argc > 3)
-		runs = atoi(argv[3]);
+		loop = atoi(argv[3]);
 
 	if (argc > 4)
-		density = atoi(argv[3]);
+		rnd = atoi(argv[4]);
 
-	array = (int *) malloc(max * sizeof(int));
+	o_array = (int *) malloc(max * sizeof(int));
 
 	if ((long long) max * (long long) density > 2000000000)
 	{
 		density = 2;
 	}
 
-	srand(time(NULL));
-//	srand(1);
-
-	rnd = rand();
-
 	for (cnt = 0, val = 0 ; cnt < max ; cnt++)
 	{
-		array[cnt] = (val += rand() % density + 1);
+		o_array[cnt] = (val += rand() % (density * 2));
 	}
 
-	top = array[max - 1] + 2;
+	printf("Benchmark: array size: %d, runs: %d, repetitions: %d, seed: %d, density: %d\n\n", max, runs, loop, rnd, density);
 
-	printf("\n\nEven distribution with %d 32 bit integers, random access\n\n", max);
+	top = o_array[max - 1] + density;
+
+	printf("Even distribution with %d 32 bit integers, random access\n\n", max);
 
 	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
-	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");		
 
-	if (max < 100)
+	if (max <= 128 && max != 10 && max != 100)
 	{
 		run(linear_search);
+		run(breaking_linear_search);
 	}
 	run(standard_binary_search);
 	run(boundless_binary_search);
 	run(doubletapped_binary_search);
 	run(monobound_binary_search);
 	run(tripletapped_binary_search);
-
 	run(monobound_quaternary_search);
 	run(monobound_interpolated_search);
 	run(adaptive_binary_search);
@@ -636,15 +679,15 @@ int main(int argc, char **argv)
 
 	for (cnt = 0, val = 0 ; cnt < max / 2 ; cnt++)
 	{
-		array[cnt] = val++;
+		o_array[cnt] = val++;
 	}
 
 	for ( ; cnt < max ; cnt++)
 	{
-		array[cnt] = (val += rand() % (2 * density) + 1);
+		o_array[cnt] = (val += rand() % density);
 	}
 
-	top = array[max - 1] + 2;
+	top = o_array[max - 1] + 2;
 
 	printf("\n\nUneven distribution with %d 32 bit integers, random access\n\n", max);
 
@@ -655,18 +698,25 @@ int main(int argc, char **argv)
 	run(monobound_interpolated_search);
 	run(adaptive_binary_search);
 
-	// sequential access
+	// sequential access, check stability while at it
 
 	sequential = 1;
 
 	printf("\n\nUneven distribution with %d 32 bit integers, sequential access\n\n", max);
 
-	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "Name", "Items", "Hits", "Misses", "Checks", "Time");
-	printf("| %30s | %10s | %10s | %10s | %10s | %10s |\n", "----------", "----------", "----------", "----------", "----------", "----------");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s | %10s\n", "Name", "Items", "Hits", "Misses", "Checks", "Time", "Stability");
+	printf("| %30s | %10s | %10s | %10s | %10s | %10s | %10s\n", "----------", "----------", "----------", "----------", "----------", "----------", "----------");
 
+	run(standard_binary_search);
+	run(boundless_binary_search);
+	run(doubletapped_binary_search);
 	run(monobound_binary_search);
+	run(tripletapped_binary_search);
+	run(monobound_quaternary_search);
 	run(monobound_interpolated_search);
 	run(adaptive_binary_search);
+
+	free(o_array);
 
 	return 0;
 }
