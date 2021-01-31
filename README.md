@@ -1,4 +1,4 @@
-The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since. Below I'll describe several novel variants with improved performance. The most notable variant, the monobound binary search, executes up to 60% faster on 32 bit integers.
+The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since. Below I'll describe several novel variants with improved performance. The most notable variant, the monobound binary search, executes up to 60% faster than the standard binary search on medium sized arrays. On small arrays it can execute up to 350% faster.
 
 A source code implementation in C is available in the [binary_search.c](https://github.com/scandum/binary_search/blob/master/binary-search.c) file which also contains a bench marking routine. A graph with performance results is included at the bottom of this page. Keep in mind performance will vary depending on hardware and compiler optimizations.
 
@@ -37,24 +37,22 @@ The boundless binary search is faster than the standard binary search since the 
 Doubletapped Binary Search
 --------------------------
 
-When you get to the end of a binary search and there are 2 elements left it takes exactly 2 if checks to finish. By doing two equality checks at the end you can finish up in either 1 or 2 if checks. Subsequently, on average, the doubletapped binary search performs fewer key checks and is slightly faster than the boundless binary search.
+When you get to the end of a binary search and there are 2 elements left it takes exactly 2 if checks to finish. By doing two equality checks at the end you can finish up in either 1 or 2 if checks. Subsequently, on average, the doubletapped binary search performs slightly fewer key checks.
 
 Monobound Binary Search
 -----------------------
 
-The monobound binary search is similar to the boundless binary search but uses an extra variable to simplify calculations and performs slightly more keychecks. It's up to 60% faster than the standard binary search when comparing 32 bit integers.
+The monobound binary search is similar to the boundless binary search but uses an extra variable to simplify calculations and performs slightly more keychecks. It's up to 60% faster than the standard binary search when comparing 32 bit integers. On small arrays the performance difference is even greater.
 
 Tripletapped Binary Search
 --------------------------
 
-When you get to the end of a binary search and there are 3 elements left it takes 2.5 if checks to finish. The monobound binary search, however, takes 3 if checks. Subsequently the tripletapped variant performs 3 equality checks at the end with early termination, resulting in slightly fewer key checks and improved performance.
-
-The tripletapped binary search is as fast as a linear search for arrays up to 4 elements long, after which it becomes faster.
+When you get to the end of a binary search and there are 3 elements left it takes 2.5 if checks to finish. The monobound binary search, however, takes 3 if checks. Subsequently the tripletapped variant performs 3 equality checks at the end with early termination, resulting in slightly fewer key checks and if the data aligns properly, slightly improved performance.
 
 Monobound Quaternary Binary Search
 ----------------------------------
 
-The monobound quaternary binary search has more key checks than the monobound binary search but in some instances runs faster on large arrays.
+The monobound quaternary binary search has more key checks than the monobound binary search but in some instances runs faster on very large arrays.
 
 Monobound Interpolated Binary Search
 ------------------------------------
@@ -78,49 +76,41 @@ The graph below shows the execution speed on arrays with 1, 2, 4, 8, 16, 32, 64,
 
 Small array benchmark tables
 ----------------------------
-The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`
+The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`. Each test was ran 100,000 times with the time (in seconds) reported of the best run.
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|                  linear_search |          1 |        810 |       9190 |      10000 |   0.000110 |
-|         standard_binary_search |          1 |        810 |       9190 |      10000 |   0.000110 |
-|        monobound_binary_search |          1 |        810 |       9190 |      10000 |   0.000110 |
-|     tripletapped_binary_search |          1 |        810 |       9190 |      10000 |   0.000118 |
+|                  linear_search |          1 |        806 |       9194 |      10000 |   0.000029 |
+|         standard_binary_search |          1 |        806 |       9194 |      10000 |   0.000031 |
+|        monobound_binary_search |          1 |        806 |       9194 |      10000 |   0.000033 |
 |                                |            |            |            |            |            |
-|                  linear_search |          2 |       1078 |       8922 |      19461 |   0.000121 |
-|         standard_binary_search |          2 |       1078 |       8922 |      20000 |   0.000188 |
-|        monobound_binary_search |          2 |       1078 |       8922 |      20000 |   0.000117 |
-|     tripletapped_binary_search |          2 |       1078 |       8922 |      19461 |   0.000124 |
+|                  linear_search |          2 |       1034 |       8966 |      19495 |   0.000039 |
+|         standard_binary_search |          2 |       1034 |       8966 |      20000 |   0.000074 |
+|        monobound_binary_search |          2 |       1034 |       8966 |      20000 |   0.000036 |
 |                                |            |            |            |            |            |
-|                  linear_search |          4 |        796 |       9204 |      38761 |   0.000127 |
-|         standard_binary_search |          4 |        796 |       9204 |      30000 |   0.000241 |
-|        monobound_binary_search |          4 |        796 |       9204 |      30000 |   0.000120 |
-|     tripletapped_binary_search |          4 |        796 |       9204 |      29609 |   0.000122 |
+|                  linear_search |          4 |        775 |       9225 |      38862 |   0.000046 |
+|         standard_binary_search |          4 |        775 |       9225 |      30000 |   0.000122 |
+|        monobound_binary_search |          4 |        775 |       9225 |      30000 |   0.000041 |
 |                                |            |            |            |            |            |
-|                  linear_search |          8 |        791 |       9209 |      77182 |   0.000146 |
-|         standard_binary_search |          8 |        791 |       9209 |      40000 |   0.000299 |
-|        monobound_binary_search |          8 |        791 |       9209 |      40000 |   0.000129 |
-|     tripletapped_binary_search |          8 |        791 |       9209 |      39592 |   0.000131 |
+|                  linear_search |          8 |        822 |       9178 |      77133 |   0.000064 |
+|         standard_binary_search |          8 |        822 |       9178 |      40000 |   0.000177 |
+|        monobound_binary_search |          8 |        822 |       9178 |      40000 |   0.000050 |
 |                                |            |            |            |            |            |
-|                  linear_search |         16 |       1049 |       8951 |     152282 |   0.000194 |
-|         standard_binary_search |         16 |       1049 |       8951 |      50000 |   0.000339 |
-|        monobound_binary_search |         16 |       1049 |       8951 |      50000 |   0.000142 |
-|     tripletapped_binary_search |         16 |       1049 |       8951 |      49466 |   0.000142 |
+|                  linear_search |         16 |       1141 |       8859 |     151154 |   0.000116 |
+|         standard_binary_search |         16 |       1141 |       8859 |      50000 |   0.000219 |
+|        monobound_binary_search |         16 |       1141 |       8859 |      50000 |   0.000064 |
 |                                |            |            |            |            |            |
-|                  linear_search |         32 |       1094 |       8906 |     302680 |   0.000280 |
-|         standard_binary_search |         32 |       1094 |       8906 |      60000 |   0.000391 |
-|        monobound_binary_search |         32 |       1094 |       8906 |      60000 |   0.000154 |
-|     tripletapped_binary_search |         32 |       1094 |       8906 |      59470 |   0.000151 |
+|                  linear_search |         32 |       1145 |       8855 |     302324 |   0.000218 |
+|         standard_binary_search |         32 |       1145 |       8855 |      60000 |   0.000270 |
+|        monobound_binary_search |         32 |       1145 |       8855 |      60000 |   0.000074 |
 |                                |            |            |            |            |            |
-|                  linear_search |         64 |       1120 |       8880 |     603901 |   0.000445 |
-|         standard_binary_search |         64 |       1120 |       8880 |      70000 |   0.000442 |
-|        monobound_binary_search |         64 |       1120 |       8880 |      70000 |   0.000169 |
-|     tripletapped_binary_search |         64 |       1120 |       8880 |      69419 |   0.000166 |
+|                  linear_search |         64 |       1096 |       8904 |     605248 |   0.000409 |
+|         standard_binary_search |         64 |       1096 |       8904 |      70000 |   0.000321 |
+|        monobound_binary_search |         64 |       1096 |       8904 |      70000 |   0.000084 |
 |                                |            |            |            |            |            |
-|                  linear_search |        128 |       1047 |       8953 |    1214931 |   0.000837 |
-|         standard_binary_search |        128 |       1047 |       8953 |      80000 |   0.000501 |
-|        monobound_binary_search |        128 |       1047 |       8953 |      80000 |   0.000184 |
-|     tripletapped_binary_search |        128 |       1047 |       8953 |      79495 |   0.000180 |
+|                  linear_search |        128 |       1046 |       8954 |    1214120 |   0.000749 |
+|         standard_binary_search |        128 |       1046 |       8954 |      80000 |   0.000386 |
+|        monobound_binary_search |        128 |       1046 |       8954 |      80000 |   0.000097 |
 
 
 Large array benchmark graph
@@ -131,89 +121,38 @@ The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 1
 
 Large array benchmark tables
 ----------------------------
-The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`
-
-Even distribution with 10 32 bit integers, random access
+The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`. Each test was ran 10,000 times with the time (in seconds) reported of the best run.
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |         10 |        925 |       9075 |      43639 |   0.000295 |
-|        boundless_binary_search |         10 |        925 |       9075 |      43639 |   0.000278 |
-|     doubletapped_binary_search |         10 |        925 |       9075 |      43253 |   0.000258 |
-|        monobound_binary_search |         10 |        925 |       9075 |      50000 |   0.000133 |
-|     tripletapped_binary_search |         10 |        925 |       9075 |      49238 |   0.000127 |
-|    monobound_quaternary_search |         10 |        925 |       9075 |      49238 |   0.000126 |
-|  monobound_interpolated_search |         10 |        925 |       9075 |      63788 |   0.000331 |
-|         adaptive_binary_search |         10 |        925 |       9075 |      49238 |   0.000134 |
+|         standard_binary_search |         10 |        910 |       9090 |      43646 |   0.000182 |
+|        boundless_binary_search |         10 |        910 |       9090 |      43646 |   0.000156 |
+|        monobound_binary_search |         10 |        910 |       9090 |      50000 |   0.000060 |
+|  monobound_interpolated_search |         10 |        910 |       9090 |      64027 |   0.000203 |
+|                                |            |            |            |            |            |
+|         standard_binary_search |        100 |       1047 |       8953 |      77085 |   0.000361 |
+|        boundless_binary_search |        100 |       1047 |       8953 |      77085 |   0.000292 |
+|        monobound_binary_search |        100 |       1047 |       8953 |      80000 |   0.000096 |
+|  monobound_interpolated_search |        100 |       1047 |       8953 |      92421 |   0.000234 |
+|                                |            |            |            |            |            |
+|         standard_binary_search |       1000 |       1041 |       8959 |     109808 |   0.000610 |
+|        boundless_binary_search |       1000 |       1041 |       8959 |     109808 |   0.000489 |
+|        monobound_binary_search |       1000 |       1041 |       8959 |     110000 |   0.000137 |
+|  monobound_interpolated_search |       1000 |       1041 |       8959 |     108509 |   0.000147 |
+|                                |            |            |            |            |            |
+|         standard_binary_search |      10000 |       1024 |       8976 |     143580 |   0.000804 |
+|        boundless_binary_search |      10000 |       1024 |       8976 |     143580 |   0.000651 |
+|        monobound_binary_search |      10000 |       1024 |       8976 |     150000 |   0.000204 |
+|  monobound_interpolated_search |      10000 |       1024 |       8976 |     109353 |   0.000202 |
+|                                |            |            |            |            |            |
+|         standard_binary_search |     100000 |       1040 |       8960 |     176860 |   0.001087 |
+|        boundless_binary_search |     100000 |       1040 |       8960 |     176860 |   0.000903 |
+|        monobound_binary_search |     100000 |       1040 |       8960 |     180000 |   0.000360 |
+|  monobound_interpolated_search |     100000 |       1040 |       8960 |     123144 |   0.000290 |
+|                                |            |            |            |            |            |
+|         standard_binary_search |    1000000 |        993 |       9007 |     209529 |   0.001570 |
+|        boundless_binary_search |    1000000 |        993 |       9007 |     209529 |   0.001369 |
+|        monobound_binary_search |    1000000 |        993 |       9007 |     210000 |   0.000691 |
+|  monobound_interpolated_search |    1000000 |        993 |       9007 |     124870 |   0.000374 |
 
-
-Even distribution with 100 32 bit integers, random access
-
-|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
-|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |        100 |       1052 |       8948 |      77057 |   0.000468 |
-|        boundless_binary_search |        100 |       1052 |       8948 |      77057 |   0.000427 |
-|     doubletapped_binary_search |        100 |       1052 |       8948 |      76662 |   0.000430 |
-|        monobound_binary_search |        100 |       1052 |       8948 |      80000 |   0.000184 |
-|     tripletapped_binary_search |        100 |       1052 |       8948 |      79642 |   0.000180 |
-|    monobound_quaternary_search |        100 |       1052 |       8948 |      79642 |   0.000181 |
-|  monobound_interpolated_search |        100 |       1052 |       8948 |      92397 |   0.000361 |
-|         adaptive_binary_search |        100 |       1052 |       8948 |      80457 |   0.000258 |
-
-
-
-Even distribution with 1000 32 bit integers, random access
-
-|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
-|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |       1000 |        978 |       9022 |     109805 |   0.000692 |
-|        boundless_binary_search |       1000 |        978 |       9022 |     109805 |   0.000616 |
-|     doubletapped_binary_search |       1000 |        978 |       9022 |     109358 |   0.000597 |
-|        monobound_binary_search |       1000 |        978 |       9022 |     110000 |   0.000235 |
-|     tripletapped_binary_search |       1000 |        978 |       9022 |     109495 |   0.000233 |
-|    monobound_quaternary_search |       1000 |        978 |       9022 |     109495 |   0.000266 |
-|  monobound_interpolated_search |       1000 |        978 |       9022 |     108484 |   0.000249 |
-|         adaptive_binary_search |       1000 |        978 |       9022 |     110536 |   0.000248 |
-
-
-Even distribution with 10000 32 bit integers, random access
-
-|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
-|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |      10000 |       1035 |       8965 |     143651 |   0.000915 |
-|        boundless_binary_search |      10000 |       1035 |       8965 |     143651 |   0.000781 |
-|     doubletapped_binary_search |      10000 |       1035 |       8965 |     143214 |   0.000813 |
-|        monobound_binary_search |      10000 |       1035 |       8965 |     150000 |   0.000304 |
-|     tripletapped_binary_search |      10000 |       1035 |       8965 |     149211 |   0.000286 |
-|    monobound_quaternary_search |      10000 |       1035 |       8965 |     149211 |   0.000377 |
-|  monobound_interpolated_search |      10000 |       1035 |       8965 |     109378 |   0.000310 |
-|         adaptive_binary_search |      10000 |       1035 |       8965 |     149449 |   0.000295 |
-
-
-Even distribution with 100000 32 bit integers, random access
-
-|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
-|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |     100000 |       1025 |       8975 |     176794 |   0.001200 |
-|        boundless_binary_search |     100000 |       1025 |       8975 |     176794 |   0.001032 |
-|     doubletapped_binary_search |     100000 |       1025 |       8975 |     176441 |   0.001085 |
-|        monobound_binary_search |     100000 |       1025 |       8975 |     180000 |   0.000466 |
-|     tripletapped_binary_search |     100000 |       1025 |       8975 |     179645 |   0.000463 |
-|    monobound_quaternary_search |     100000 |       1025 |       8975 |     179660 |   0.000556 |
-|  monobound_interpolated_search |     100000 |       1025 |       8975 |     123273 |   0.000405 |
-|         adaptive_binary_search |     100000 |       1025 |       8975 |     179691 |   0.000474 |
-
-
-Even distribution with 1000000 32 bit integers, random access
-
-|                           Name |      Items |       Hits |     Misses |     Checks |       Time |
-|                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-|         standard_binary_search |    1000000 |        977 |       9023 |     209529 |   0.001700 |
-|        boundless_binary_search |    1000000 |        977 |       9023 |     209529 |   0.001512 |
-|     doubletapped_binary_search |    1000000 |        977 |       9023 |     209086 |   0.001560 |
-|        monobound_binary_search |    1000000 |        977 |       9023 |     210000 |   0.000986 |
-|     tripletapped_binary_search |    1000000 |        977 |       9023 |     209526 |   0.000994 |
-|    monobound_quaternary_search |    1000000 |        977 |       9023 |     209513 |   0.000944 |
-|  monobound_interpolated_search |    1000000 |        977 |       9023 |     124781 |   0.000504 |
-|         adaptive_binary_search |    1000000 |        977 |       9023 |     209533 |   0.001024 |
 
