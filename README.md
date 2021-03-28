@@ -29,6 +29,11 @@ Zero length array
 
 All the implementations in binary_search.c should correctly handle the case where the search function is called with 0 as the array length.
 
+Compilation
+-----------
+
+For the monobound binary search variant to perform well the source code must be compiled with the -O1, -O2, or -O3 optimization flag. 
+
 Boundless Binary Search
 -----------------------
 
