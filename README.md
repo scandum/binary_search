@@ -75,13 +75,13 @@ A practical application for an adaptive binary search would be accessing a unico
 
 Small array benchmark graph
 ---------------------------
+The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04). The source code was compiled using `gcc -O3 binary-search.c`. Each test was ran 1,000 times with the time (in seconds) reported of the best run.
+
 The graph below shows the execution speed on arrays with 1, 2, 4, 8, 16, 32, 64, and 128 elements on an Intel i3 quad-core processor.
 
-![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search_small.png)
+![binary search graph](/binary_search_small.png)
 
-Small array benchmark tables
-----------------------------
-The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`. Each test was ran 100,000 times with the time (in seconds) reported of the best run.
+<details><summary><b>data table</b></summary>
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
@@ -117,16 +117,17 @@ The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.0
 |         standard_binary_search |        128 |       1046 |       8954 |      80000 |   0.000386 |
 |        monobound_binary_search |        128 |       1046 |       8954 |      80000 |   0.000097 |
 
+</details>
 
 Large array benchmark graph
 ---------------------------
+The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04). The source code was compiled using `gcc -O3 binary-search.c`. Each test was ran 10,000 times with the time (in seconds) reported of the best run.
+
 The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 100000, and 1000000 elements on an Intel i3 quad-core processor.
 
-![binary search graph](https://github.com/scandum/binary_search/blob/master/binary_search.png)
+![binary search graph](/binary_search.png)
 
-Large array benchmark tables
-----------------------------
-The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1). The source code was compiled using `gcc -O3 binary-search.c`. Each test was ran 10,000 times with the time (in seconds) reported of the best run.
+<details><summary><b>data table</b></summary>
 
 |                           Name |      Items |       Hits |     Misses |     Checks |       Time |
 |                     ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
@@ -160,4 +161,38 @@ The following benchmark was on WSL gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.0
 |        monobound_binary_search |    1000000 |        993 |       9007 |     210000 |   0.000691 |
 |  monobound_interpolated_search |    1000000 |        993 |       9007 |     124870 |   0.000374 |
 
+</details>
 
+monobound_bsearch() vs bsearch()
+--------------------------------
+The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04). The source code was compiled using `gcc -O3 monobound_bsearch.c`. Each test was ran 1,000 times with the time (in seconds) reported of the best run.
+
+The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 100000, and 1000000 elements on an Intel i3 quad-core processor. The bsearch function is the one provided by stdlib.h.
+
+![binary search graph](/graph3.png)
+
+<details><summary><b>data table</b></summary>
+|       Name |      Items |       Hits |     Misses |     Checks |       Time |
+| ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
+|  monobound |         10 |        930 |       9070 |      48149 |   0.000136 |
+|    bsearch |         10 |        930 |       9070 |      34677 |   0.000202 |
+|            |            |            |            |            |            |
+|  monobound |        100 |       1103 |       8897 |      77539 |   0.000189 |
+|    bsearch |        100 |       1103 |       8897 |      66470 |   0.000410 |
+|            |            |            |            |            |            |
+|  monobound |       1000 |       1033 |       8967 |     107845 |   0.000265 |
+|    bsearch |       1000 |       1033 |       8967 |      98703 |   0.000623 |
+|            |            |            |            |            |            |
+|  monobound |      10000 |       1033 |       8967 |     147232 |   0.000357 |
+|    bsearch |      10000 |       1033 |       8967 |     132342 |   0.000820 |
+|            |            |            |            |            |            |
+|  monobound |     100000 |       1014 |       8986 |     177576 |   0.000539 |
+|    bsearch |     100000 |       1014 |       8986 |     165785 |   0.001111 |
+|            |            |            |            |            |            |
+|  monobound |    1000000 |        998 |       9002 |     207938 |   0.001124 |
+|    bsearch |    1000000 |        998 |       9002 |     198443 |   0.001603 |
+|            |            |            |            |            |            |
+|  monobound |   10000000 |        974 |       9026 |     247324 |   0.002641 |
+|    bsearch |   10000000 |        974 |       9026 |     232174 |   0.003784 |
+
+</details>
