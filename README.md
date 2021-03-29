@@ -167,7 +167,7 @@ monobound_bsearch() vs bsearch()
 --------------------------------
 The following benchmark was on WSL 2 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04). The source code was compiled using `gcc -O3 monobound_bsearch.c`. Each test was ran 1,000 times with the time (in seconds) reported of the best run.
 
-The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 100000, and 1000000 elements on an Intel i3 quad-core processor. The bsearch function is the one provided by stdlib.h.
+The graph below shows the execution speed on arrays with 10, 100, 1K, 10K, 100K, 1M, and 10M elements on an Intel i3 quad-core processor. The bsearch function is the one provided by stdlib.h.
 
 ![binary search graph](/graph3.png)
 
