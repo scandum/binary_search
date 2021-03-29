@@ -172,6 +172,7 @@ The graph below shows the execution speed on arrays with 10, 100, 1000, 10000, 1
 ![binary search graph](/graph3.png)
 
 <details><summary><b>data table</b></summary>
+
 |       Name |      Items |       Hits |     Misses |     Checks |       Time |
 | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
 |  monobound |         10 |        930 |       9070 |      48149 |   0.000136 |
