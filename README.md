@@ -2,7 +2,7 @@ The most commonly used binary search variant was first published by Hermann Bott
 
 A source code implementation in C is available in the [binary_search.c](https://github.com/scandum/binary_search/blob/master/binary-search.c) file which also contains a bench marking routine. A graph with performance results is included at the bottom of this page. Keep in mind performance will vary depending on hardware and compiler optimizations.
 
-I'll briefly describe each variant and notable optimizations below.
+I'll briefly describe each variant and notable optimizations below, followed by some performance graphs.
 
 Deferred Detection of Equality
 ------------------------------
