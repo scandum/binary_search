@@ -49,7 +49,7 @@ Monobound Binary Search
 
 The monobound binary search is similar to the boundless binary search but uses an extra variable to simplify calculations and performs slightly more keychecks. It's up to 60% faster than the standard binary search when comparing 32 bit integers. On small arrays the performance difference is even greater.
 
-The performance gain is due to dynamic loop unrolling, which the traditional binary search (by trying to minimize the number of key checks) does not allow. Loop unrolling in turn allows various other potential optimizations.
+The performance gain is due to dynamic loop unrolling, which the traditional binary search (by trying to minimize the number of key checks) does not allow. Loop unrolling in turn allows various other potential optimizations at the compiler and cpu level.
 
 Tripletapped Binary Search
 --------------------------
