@@ -49,15 +49,17 @@ Monobound Binary Search
 
 The monobound binary search is similar to the boundless binary search but uses an extra variable to simplify calculations and performs slightly more keychecks. It's up to 60% faster than the standard binary search when comparing 32 bit integers. On small arrays the performance difference is even greater.
 
+The performance gain is due to dynamic loop unrolling, which the traditional binary search (by trying to minimize the number of key checks) does not allow. Loop unrolling in turn allows various other potential optimizations.
+
 Tripletapped Binary Search
 --------------------------
 
 When you get to the end of a binary search and there are 3 elements left it takes 2.5 if checks to finish. The monobound binary search, however, takes 3 if checks. Subsequently the tripletapped variant performs 3 equality checks at the end with early termination, resulting in slightly fewer key checks and if the data aligns properly, slightly improved performance.
 
-Monobound Quaternary Binary Search
+Quaternary Binary Search
 ----------------------------------
 
-The monobound quaternary binary search has more key checks than the monobound binary search but in some instances runs faster on very large arrays.
+The dynamic unrolling of loops is often limited to 16 iterations. By narrowing down the search range by a fourth each loop, instead of a half, it takes 16 iteriations to search 4294967296 elements, instead of 65536. This optimizations slows things down slightly for smaller arrays, but can give a notable gain on larger arrays.
 
 Monobound Interpolated Binary Search
 ------------------------------------
