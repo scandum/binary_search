@@ -729,6 +729,5 @@ int main(int argc, char **argv)
 
 	free(o_array);
 	free(r_array);
-
-	return 0;
+	;
 }
