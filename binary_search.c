@@ -1,5 +1,6 @@
 /*
 	Copyright (C) 2014-2021 Igor van den Hoven ivdhoven@gmail.com
+	Copyright (C) 2023 Zettabyte Software LLC.
 */
 
 /*
@@ -523,6 +524,36 @@ int adaptive_binary_search(int *array, unsigned int array_size, int key)
 	return -1;
 }
 
+int shar_binary_search(int *array, unsigned int array_size, int key)
+{
+	unsigned int i;
+
+	switch (array_size)
+	{
+	default:
+		unsigned int u = sizeof (array_size) * 8 - __builtin_clz(2U*array_size-1U) - 2;
+		unsigned int p = 1U << (u);
+		i = (array[p] <= key) * (array_size - p);
+
+		++checks;
+
+		while (p >>= 1) {
+			++checks;
+			if (array[i + p] <= key)
+				i += p;
+		}
+		break;
+	case 1:
+		i = 0;
+		break;
+	case 0:
+		return -1;
+	}
+
+	++checks;
+	return (array[i] == key) ? i : -1;
+}
+
 // benchmark
 
 long long utime()
@@ -683,6 +714,7 @@ int main(int argc, char **argv)
 	run(monobound_quaternary_search);
 	run(monobound_interpolated_search);
 	run(adaptive_binary_search);
+	run(shar_binary_search);
 
 	// uneven distribution
 
@@ -701,6 +733,7 @@ int main(int argc, char **argv)
 	run(monobound_binary_search);
 	run(monobound_interpolated_search);
 	run(adaptive_binary_search);
+	run(shar_binary_search);
 
 	// sequential access, check stability while at it
 
@@ -726,6 +759,7 @@ int main(int argc, char **argv)
 	run(monobound_quaternary_search);
 	run(monobound_interpolated_search);
 	run(adaptive_binary_search);
+	run(shar_binary_search);
 
 	free(o_array);
 	free(r_array);
