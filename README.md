@@ -1,6 +1,6 @@
 The most commonly used binary search variant was first published by Hermann Bottenbruch in 1962 and hasn't notably changed since. Below I'll describe several novel variants with improved performance. The most notable variant, the monobound binary search, executes two to four times faster than the standard binary search on arrays smaller than 1 million 32 bit integers.
 
-A source code implementation in C is available in the [binary_search.c](https://github.com/scandum/binary_search/blob/master/binary_search.c) file which also contains a bench marking routine. A graph with performance results is included at the bottom of this page. Keep in mind performance will vary depending on hardware and compiler optimizations.
+A source code implementation in C containing every variant is available in the [binary_search.c](https://github.com/scandum/binary_search/blob/master/binary_search.c) file which also contains a bench marking routine. A graph with performance results is included at the bottom of this page. Keep in mind performance will vary depending on hardware and compiler optimizations.
 
 I'll briefly describe each variant and notable optimizations below, followed by some performance graphs.
 
@@ -34,23 +34,121 @@ Compilation
 
 For the monobound binary search variant to perform well the source code must be compiled with the -O1, -O2, or -O3 optimization flag. 
 
+Standard Binary Search
+----------------------
+
+The standard binary search found in most text books.
+```c
+int standard_binary_search(int *array, unsigned int array_size, int key)
+{
+        int bot, mid, top;
+
+        if (array_size == 0)
+                return -1;
+
+        bot = 0;
+        top = array_size - 1;
+
+        while (bot < top)
+        {
+                mid = top - (top - bot) / 2;
+
+                if (key < array[mid])
+                        top = mid - 1;
+                else
+                        bot = mid;
+        }
+
+        if (key == array[top])
+                return top;
+        return -1;
+}
+```
 Boundless Binary Search
 -----------------------
 
 The boundless binary search is faster than the standard binary search since the loop contains 1 key check, 1 integer check, and (on average) 1.5 integer assignments. The performance gain will vary depending on various factors, but should be around 20% when comparing 32 bit integers.
+```c
+int boundless_binary_search(int *array, unsigned int array_size, int key)
+{
+        unsigned int mid, bot;
 
+        if (array_size == 0)
+                return -1;
+
+        bot = 0;
+        mid = array_size;
+
+        while (mid > 1)
+        {
+                if (key >= array[bot + mid / 2])
+                        bot += mid++ / 2;
+                mid /= 2;
+        }
+
+        if (key == array[bot])
+                return bot;
+        return -1;
+}
+```
 Doubletapped Binary Search
 --------------------------
 
-When you get to the end of a binary search and there are 2 elements left it takes exactly 2 if checks to finish. By doing two equality checks at the end you can finish up in either 1 or 2 if checks. Subsequently, on average, the doubletapped binary search performs slightly fewer key checks.
+When you get to the end of a binary search and there are 2 elements left it takes exactly 2 if checks to finish. By doing two equality checks at the end you can finish up in either 1 or 2 if checks. Subsequently, on average, the doubletapped binary search performs slightly fewer key checks than the standard binary search. This variant has excellent performance with the clang compiler.
+```c
+int doubletapped_binary_search(int *array, unsigned int array_size, int key)
+{
+        unsigned int mid, bot;
 
+        bot = 0;
+        mid = array_size;
+
+        while (mid > 2)
+        {
+                if (key >= array[bot + mid / 2])
+                        bot += mid++ / 2;
+                mid /= 2;
+        }
+
+        while (mid--)
+        {
+                if (key == array[bot + mid])
+                        return bot + mid;
+        }
+        return -1;
+}
+```
 Monobound Binary Search
 -----------------------
 
 The monobound binary search is similar to the boundless binary search but uses an extra variable to simplify calculations and performs slightly more keychecks. It's up to 60% faster than the standard binary search when comparing 32 bit integers. On small arrays the performance difference is even greater.
 
 The performance gain is due to dynamic loop unrolling, which the traditional binary search (by trying to minimize the number of key checks) does not allow. Loop unrolling in turn allows various other potential optimizations at the compiler and cpu level.
+```c
+int monobound_binary_search(int *array, unsigned int array_size, int key)
+{
+        unsigned int bot, mid, top;
 
+        if (array_size == 0)
+                return -1;
+
+        bot = 0;
+        top = array_size;
+
+        while (top > 1)
+        {
+                mid = top / 2;
+
+                if (key >= array[bot + mid])
+                        bot += mid;
+                top -= mid;
+        }
+
+        if (key == array[bot])
+                return bot;
+        return -1;
+}
+```
 Tripletapped Binary Search
 --------------------------
 
