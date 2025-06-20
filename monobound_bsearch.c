@@ -1,33 +1,6 @@
-/*
-	Copyright (C) 2014-2021 Igor van den Hoven ivdhoven@gmail.com
-*/
+// Binary Search v1.7 - Igor van den Hoven ivdhoven@gmail.com
 
-/*
-	Permission is hereby granted, free of charge, to any person obtaining
-	a copy of this software and associated documentation files (the
-	"Software"), to deal in the Software without restriction, including
-	without limitation the rights to use, copy, modify, merge, publish,
-	distribute, sublicense, and/or sell copies of the Software, and to
-	permit persons to whom the Software is furnished to do so, subject to
-	the following conditions:
-
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/*
-	v1.7
-
-	Compile using: gcc -O3 monobound_bsearch.c
-*/
+// Compile using: gcc -O3 monobound_bsearch.c
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -52,33 +25,26 @@ __attribute__ ((noinline)) int cmp_int(const void * a, const void * b)
 // Monobound binary search using gcc's bsearch() interface. Since the
 // comparison is slow there's no deferred detection of equality.
 
-void *monobound_bsearch(const void *key, const void *array, size_t nmemb, size_t size, int (*cmp)(const void *, const void *))
+void *monobound_bsearch(const void *key, const void *base0, size_t nmemb, size_t size, int (*compar)(const void *, const void *))
 {
-	size_t mid, top;
-	int val;
-	char *piv, *base = (char *) array;
+        char *piv, *base = (char *) base0;
+        int cmp;
 
-	mid = top = nmemb;
+        while (nmemb)
+        {
+                nmemb /= 2;
 
-	while (mid)
-	{
-		mid = top / 2;
+                piv = base + nmemb * size;
 
-		piv = base + mid * size;
+                cmp = (*compar)(key, piv);
 
-		val = cmp(key, piv);
+                if (cmp == 0)
+                        return (void *) piv;
 
-		if (val == 0)
-		{
-			return piv;
-		}
-		if (val >= 0)
-		{
-			base = piv;
-		}
-		top -= mid;
-	}
-	return NULL;
+                if (cmp > 0)
+                        base = piv + size;
+        }
+        return NULL;
 }
 
 // benchmark
@@ -117,7 +83,7 @@ void execute(void *(*algo_func)(const void *, const void *, size_t, size_t, int 
 			if (algo_func(r_array + cnt, o_array, max, sizeof(int), cmp_int) != NULL)
 			{
 				hit++;
-			}	
+			}
 			else
 			{
 				miss++;
