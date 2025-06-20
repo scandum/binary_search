@@ -91,33 +91,7 @@ int boundless_binary_search(int *array, unsigned int array_size, int key)
         return -1;
 }
 ```
-Doubletapped Binary Search
---------------------------
 
-When you get to the end of a binary search and there are 2 elements left it takes exactly 2 if checks to finish. By doing two equality checks at the end you can finish up in either 1 or 2 if checks. Subsequently, on average, the doubletapped binary search performs slightly fewer key checks than the standard binary search. This variant has excellent performance with the clang compiler.
-```c
-int doubletapped_binary_search(int *array, unsigned int array_size, int key)
-{
-        unsigned int mid, bot;
-
-        bot = 0;
-        mid = array_size;
-
-        while (mid > 2)
-        {
-                if (key >= array[bot + mid / 2])
-                        bot += mid++ / 2;
-                mid /= 2;
-        }
-
-        while (mid--)
-        {
-                if (key == array[bot + mid])
-                        return bot + mid;
-        }
-        return -1;
-}
-```
 Monobound Binary Search
 -----------------------
 
@@ -149,9 +123,38 @@ int monobound_binary_search(int *array, unsigned int array_size, int key)
         return -1;
 }
 ```
-Tripletapped Binary Search
---------------------------
 
+Optimal Binary Search
+--------------------------
+The number of key checks can be reduced by up to 20% by not using deferred detection of equality. While this variant is slightly slower it can still be unrolled, and is likely faster for string comparisons.
+
+```c
+int optimal_binary_search(int *array, unsigned int array_size, int key)
+{
+        unsigned int mid, bot;
+        int val;
+
+        bot = 0;
+        mid = array_size;
+
+        while (mid)
+        {
+                mid /= 2;
+
+                val = key - array[bot + mid];
+
+                if (val == 0)
+                {
+                        return bot + mid;
+                }
+                if (val > 0)
+                {
+                        bot += mid + 1;
+                }
+        }
+        return -1;
+}
+```
 When you get to the end of a binary search and there are 3 elements left it takes 2.5 if checks to finish. The monobound binary search, however, takes 3 if checks. Subsequently the tripletapped variant performs 3 equality checks at the end with early termination, resulting in slightly fewer key checks and if the data aligns properly, slightly improved performance.
 
 Quaternary Binary Search
